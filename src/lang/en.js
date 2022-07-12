@@ -62,7 +62,13 @@ const enJSON = {
     "please fill the email and password fields, the password needs to have at least 6 characters whit one special like @#!$%&*+-",
   errorSecondPass: "the passwords don not match",
   error500:
-    "oops, something went wrong, sorry, we're already working on fixing the problem. Please go back and try again later."
+    "oops, something went wrong, sorry, we're already working on fixing the problem. Please go back and try again later.",
+  workouts: "workouts",
+  startWorkout: "start workout",
+  free: "free",
+  createWorkout: "create workout",
+  addWorkout: "add workout",
+  myWorkouts: "my workouts"
 };
 
 export const en = (str) => {

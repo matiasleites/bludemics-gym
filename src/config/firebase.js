@@ -1,8 +1,19 @@
 import { initializeApp } from "firebase/app";
-import { getFirestore, Timestamp } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  getFirestore,
+  query,
+  setDoc,
+  Timestamp
+} from "firebase/firestore";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { initializeAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import { isEven, msj } from "./general-fun";
 
 const config = {
   apiKey: process.env.REACT_APP_APIKEY,
@@ -31,3 +42,75 @@ export async function getFirebaseFileUrl(url) {
   const task = await getDownloadURL(storageRef);
   return task;
 }
+
+export const getFirestoreDocument = async (url, data, data2, data3, data4) => {
+  const divisions = await url.split("/");
+  var response = [];
+  try {
+    if (divisions.length > 0 && isEven(divisions.length)) {
+      //is document
+      const myDoc = doc(firestoredb, url);
+      await getDoc(myDoc).then((doc) => {
+        response = doc.data();
+        if (response) response.id = doc.id;
+      });
+    } else {
+      //is collection
+      const myDoc = collection(firestoredb, url);
+      var myQuere;
+      if (data) {
+        myQuere = query(myDoc, data);
+        if (data2) {
+          myQuere = query(myDoc, data, data2);
+          if (data3) {
+            myQuere = query(myDoc, data, data2, data3);
+            if (data4) {
+              myQuere = query(myDoc, data, data2, data3, data4);
+            } else {
+              myQuere = query(myDoc, data, data2, data3);
+            }
+          } else {
+            myQuere = query(myDoc, data, data2);
+          }
+        } else {
+          myQuere = query(myDoc, data);
+        }
+      } else {
+        myQuere = query(myDoc);
+      }
+      const myDocs = await getDocs(myQuere);
+      myDocs.forEach((doc) => {
+        const myData = doc.data();
+        myData.id = doc.id;
+        response.push(myData);
+      });
+    }
+  } catch (g) {
+    msj(g);
+    response = false;
+  }
+  return response;
+};
+
+export const insertFirestore = async (url, data) => {
+  const divisions = await url.split("/");
+  var response = false;
+  try {
+    if (divisions.length > 0 && isEven(divisions.length)) {
+      //is document
+      const myDoc = doc(firestoredb, url);
+      await setDoc(myDoc, data).then(() => {
+        response = true;
+      });
+    } else {
+      //is collection
+      const myDoc = collection(firestoredb, url);
+      await addDoc(myDoc, data).then((doc) => {
+        response = doc.id;
+      });
+    }
+  } catch (g) {
+    msj(g);
+  }
+  return response;
+};
