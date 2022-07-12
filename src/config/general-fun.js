@@ -11,15 +11,25 @@ export const formatedNumber = (number, decimals) => {
   }
 };
 
-export const msj = (info) => {
-  console.error(info);
-};
+export function userId() {
+  var uid = "";
+  uid = localStorage.getItem("uid");
+  if (!uid) return false;
+  return uid;
+}
+export function blockButton() {
+  return " d-grid gap-2 ";
+}
 
-export const delay = async (seconds) => {
+export function msj(info) {
+  console.error(info);
+}
+
+export async function delay(seconds) {
   var time = seconds * 1000;
   await new Promise((resolve) => setTimeout(resolve, time)); // 3 sec
   return true;
-};
+}
 
 export function useWindowSize() {
   const [size, setSize] = useState([0, 0]);
@@ -32,6 +42,15 @@ export function useWindowSize() {
     return () => window.removeEventListener("resize", updateSize);
   }, []);
   return size;
+}
+
+export function isEven(n) {
+  try {
+    return n % 2 == 0;
+  } catch (g) {
+    msj(g);
+    return false;
+  }
 }
 
 export const GeneralSpinner = () => {
