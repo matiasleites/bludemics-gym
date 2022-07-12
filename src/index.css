@@ -11,3 +11,85 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.title {
+  font-size: clamp(18px, 10vw, 32px);
+}
+
+.subTitle {
+  font-size: clamp(12px, 5vw, 20px);
+}
+
+.text {
+  font-size: clamp(10px, 4vw, 18px);
+}
+
+.alphaContainerLigth {
+  max-width: 700px !important;
+  background-color: rgba(255,255,255, 0.7);
+  color: black;
+  border-radius: 12px;
+}
+
+.alphaContainerDark {
+  max-width: 700px !important;
+  background-color: rgba(0,0,0, 0.7);
+  color: white;
+  border-radius: 10px !important;
+  font-size: clamp(10px, 4vw, 18px);
+  box-shadow: 5px 5px 5px 0px rgba(0,0,0, 0.4);
+}
+
+.alphaContainerDark input {
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+   border-radius: 0px;
+   border: none !important;
+   border-bottom: 1.5px solid #FFF !important;
+   background-color: rgba(0,0,0, 0.0);
+   outline: none !important;
+   color: #a0d18c;
+   padding-left: 10px;
+}
+
+.alphaContainerDark input:active {
+  outline: none !important;
+  border: none !important;
+  border-bottom: 1.5px solid #FFF !important;
+  color: #2d9fd9;
+  box-shadow: 0 0 0px #719ECE;
+}
+
+.alphaContainerDark input:focus {
+  outline: none !important;
+  background-color: rgba(0,0,0, 0.0);
+  border: none !important;
+  border-bottom: 2px solid #FFF !important;
+  color: #2d9fd9;
+  box-shadow: 0 0 0px #719ECE;
+}
+
+.alphaContainerDark label {
+  color: rgba(255,255,255, 0.6);
+  font-size: clamp(10px, 5vw, 12px);
+  margin: 0%;
+  padding: 0%;
+}
+
+input:-webkit-autofill { 
+  color: #FFF !important;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: white !important;
+
+}
+
+.alphaContainerDark button {
+  -webkit-border-radius: 12px;
+  -moz-border-radius: 12px;
+   border-radius: 12px;
+}
+
+.noRounded {
+  border-radius: 0% !important;
+}
