@@ -1,4 +1,4 @@
-import { useLayoutEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import { Spinner, Row, Col } from "react-bootstrap";
 
 export const formatedNumber = (number, decimals) => {
@@ -68,10 +68,26 @@ export const GeneralSpinner = () => {
   );
 };
 
-export const GeneralInformation = ({ info, pos, customClass }) => {
+export const GeneralInformation = ({
+  info,
+  pos,
+  seconds = 5,
+  customClass = ""
+}) => {
+  const [show, setShow] = useState(true);
+  useEffect(() => {
+    setShow(true);
+    closeInformation();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [info]);
+
+  async function closeInformation() {
+    await delay(seconds);
+    setShow(false);
+  }
+
   if (!info) return null;
-  if (!customClass) customClass = "";
-  if (info.pos == pos && info.text && info.text.length > 0)
+  if ((show && info.pos == pos, info.text && info.text.length > 0))
     return (
       <Row className={"ps-3 " + customClass}>
         <Col className="ps-3">
@@ -81,3 +97,9 @@ export const GeneralInformation = ({ info, pos, customClass }) => {
     );
   return null;
 };
+
+export function getYouTubeId(url) {
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : undefined;
+}

@@ -49,6 +49,7 @@ const enJSON = {
   training: "training",
   workout: "workout",
   repetitions: "repetitions",
+  reps: "repetitions",
   series: "series",
   weight: "weight",
   plan: "plan",
@@ -71,7 +72,14 @@ const enJSON = {
   myWorkouts: "my workouts",
   delete: "delete",
   edit: "edit",
-  upgrade: "upgrade"
+  upgrade: "upgrade",
+  exercices: "exercices",
+  exercice: "exercice",
+  addExercice: "add exercice",
+  createExercice: "create exercice",
+  youTubeVideoLink: "youtube video link",
+  video: "video",
+  serie: "serie"
 };
 
 export const en = (str) => {
