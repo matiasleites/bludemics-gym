@@ -8,7 +8,8 @@ import {
   getFirestore,
   query,
   setDoc,
-  Timestamp
+  Timestamp,
+  updateDoc
 } from "firebase/firestore";
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { initializeAnalytics } from "firebase/analytics";
@@ -28,7 +29,9 @@ const config = {
 
 export const firebaseApp = initializeApp(config);
 export const auth = getAuth(firebaseApp);
-export const firestoredb = getFirestore(firebaseApp);
+export const firestoredb = getFirestore(firebaseApp, {
+  experimentalForceLongPolling: true
+});
 export const storage = getStorage(firebaseApp);
 export const storageback = getStorage(firebaseApp);
 export const analytics = initializeAnalytics(firebaseApp);
@@ -107,6 +110,26 @@ export const insertFirestore = async (url, data) => {
       const myDoc = collection(firestoredb, url);
       await addDoc(myDoc, data).then((doc) => {
         response = doc.id;
+      });
+    }
+  } catch (g) {
+    msj(g);
+  }
+  return response;
+};
+
+export const updateFirestoreDocument = async (url, data, force) => {
+  if (!force) force = false;
+  var response = false;
+  try {
+    const myDoc = doc(firestoredb, url);
+    if (force) {
+      await setDoc(myDoc, data).then(() => {
+        response = true;
+      });
+    } else {
+      await updateDoc(myDoc, data).then(() => {
+        response = true;
       });
     }
   } catch (g) {

@@ -1,5 +1,5 @@
 import { useLayoutEffect, useState } from "react";
-import { Spinner } from "react-bootstrap";
+import { Spinner, Row, Col } from "react-bootstrap";
 
 export const formatedNumber = (number, decimals) => {
   if (!number) return 0;
@@ -66,4 +66,18 @@ export const GeneralSpinner = () => {
       />
     </center>
   );
+};
+
+export const GeneralInformation = ({ info, pos, customClass }) => {
+  if (!info) return null;
+  if (!customClass) customClass = "";
+  if (info.pos == pos && info.text && info.text.length > 0)
+    return (
+      <Row className={"ps-3 " + customClass}>
+        <Col className="ps-3">
+          <small>{info.text}</small>
+        </Col>
+      </Row>
+    );
+  return null;
 };
