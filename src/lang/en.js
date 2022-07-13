@@ -68,7 +68,10 @@ const enJSON = {
   free: "free",
   createWorkout: "create workout",
   addWorkout: "add workout",
-  myWorkouts: "my workouts"
+  myWorkouts: "my workouts",
+  delete: "delete",
+  edit: "edit",
+  upgrade: "upgrade"
 };
 
 export const en = (str) => {

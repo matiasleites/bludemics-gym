@@ -2,10 +2,8 @@ import { Container, Row, Col } from "react-bootstrap";
 import { Helmet, HelmetData } from "react-helmet-async";
 import { getStr } from "../../lang/lang-fun";
 import { SubTitle, Text } from "./home-ele";
-import f02 from "../../img/f02.jpg";
 import f01 from "../../img/f01.jpg";
 import { useEffect, useState } from "react";
-import { randomImage } from "./home-fun";
 import { useWindowSize } from "../../config/general-fun";
 import { LoginForm, LogOutButton } from "../login/login-ele";
 import { useAuth } from "../../context/authContext";
@@ -18,8 +16,6 @@ const helmetData = new HelmetData({});
 function Home() {
   const [width] = useWindowSize();
   const [small, setSmall] = useState(width < 400 ? true : false);
-  const [images] = useState([f01, f02]);
-  const [back, setBack] = useState(f01);
   // eslint-disable-next-line no-unused-vars
   const { user, isLogged } = useAuth();
 
@@ -31,23 +27,10 @@ function Home() {
     }
   }, [width]);
 
-  useEffect(() => {
-    const myBack = randomImage(images);
-    setBack(myBack);
-  }, [images]);
+  useEffect(() => {}, []);
 
   return (
-    <Container
-      className={small ? "p-1 text-center" : "p-2 pt-5"}
-      fluid
-      style={{
-        backgroundImage: `url(${back})`,
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        height: "100vh",
-        position: "fixed"
-      }}
-    >
+    <Container className={small ? "p-1 text-center" : "p-2 pt-5"} fluid>
       <Helmet helmetData={helmetData}>
         <title>{getStr("appName3", 1)}</title>
         <meta name="description" content={getStr("slogan", 1)} />
