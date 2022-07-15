@@ -79,7 +79,11 @@ const enJSON = {
   createExercice: "create exercice",
   youTubeVideoLink: "youtube video link",
   video: "video",
-  serie: "serie"
+  serie: "serie",
+  endWorkout: "end workout",
+  km: "km",
+  minutes: "minutes",
+  steps: "steps"
 };
 
 export const en = (str) => {

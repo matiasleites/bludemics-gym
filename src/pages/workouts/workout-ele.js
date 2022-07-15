@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
 import YouTube from "react-youtube";
+import { firestoreNow } from "../../config/firebase";
 import {
   blockButton,
   delay,
@@ -13,14 +14,39 @@ import {
 import { getStr } from "../../lang/lang-fun";
 import {
   createWorkout,
+  deleteWorkout,
+  endTraining,
+  getCurrentTraining,
   getUserWorkoutsList,
+  getVideoSize,
+  getWorkout,
+  minutesBetweenTwoDates,
+  startTraining,
+  traninigElapsedTime,
+  updateTraining,
   updateWorkout
 } from "./workout-fun";
+
+export const TimerTraining = ({ workout }) => {
+  const [timer, setTimer] = useState("");
+  const tick = useRef();
+  useEffect(() => {
+    tick.current = setInterval(() => {
+      setTimer(traninigElapsedTime(workout));
+    }, 1000);
+
+    return () => clearInterval(tick.current);
+  }, [workout]);
+
+  return <div className="title">{timer}</div>;
+};
 
 export const StartWorkoutContainer = ({ customClass }) => {
   const [workoutType, setWorkoutType] = useState("");
   const [loading, setLoading] = useState(false);
   const [workoutsArray, setWorkoutsArray] = useState([]);
+  const [currentTraining, setCurrentTrainig] = useState({});
+
   const dropType = (e) => {
     var id = e.target.value;
     setWorkoutType(id);
@@ -32,48 +58,373 @@ export const StartWorkoutContainer = ({ customClass }) => {
 
   async function getWorkoutsList() {
     setLoading(true);
+    const training = await getCurrentTraining();
+    if (training && training.length > 0) {
+      setCurrentTrainig({ ...training[0] });
+    } else {
+      setCurrentTrainig({});
+    }
     const myWorks = await getUserWorkoutsList();
     setWorkoutsArray([...myWorks]);
     setLoading(false);
   }
 
+  async function startMyTraining() {
+    setLoading(true);
+    const type = workoutType;
+    var exercices = [];
+    var name = getStr("free", 1);
+
+    if (type.length > 0) {
+      const myWorkout = await getWorkout(type);
+      name = myWorkout.name;
+      exercices = myWorkout.exercices;
+      exercices = exercices.map(function (value) {
+        value.status = 0;
+        const myArray = [];
+        for (let i = 0; i < value.series; i++) {
+          myArray.push({ status: 0 });
+        }
+        value.series = myArray;
+        return value;
+      });
+    }
+    const info = {
+      type,
+      open: firestoreNow(),
+      exercices,
+      name,
+      calories: 0,
+      km: 0,
+      minutes: 0,
+      end: false,
+      steps: 0,
+      info: ""
+    };
+    const response = await startTraining(info);
+    setLoading(false);
+    getWorkoutsList();
+    return response;
+  }
+
   return (
     <Container className={customClass}>
-      <Row className="mb-2">
-        <Col>{getStr("workouts", 1)}</Col>
+      {currentTraining && currentTraining.open ? (
+        <OpenTrainigContainer training={currentTraining} />
+      ) : (
+        <>
+          <Row className="mb-2">
+            <Col>{getStr("workouts", 1)}</Col>
+          </Row>
+          <Row>
+            <Col className="pt-2 pb-2" sm>
+              <Form.Group>
+                <Form.Control
+                  value={workoutType}
+                  as="select"
+                  onChange={dropType}
+                  onSelect={dropType}
+                >
+                  <option id={""} value={""}>
+                    {getStr("free", 1)}
+                  </option>
+                  {Object.entries(workoutsArray).map(([k, work]) => (
+                    <option
+                      id={work.id}
+                      key={"wSelect" + k + work.id}
+                      value={work.id}
+                    >
+                      {work.name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+            </Col>
+            <Col className="pt-2 pb-2 d-grid gap-2" sm>
+              <Button
+                variant="success"
+                disabled={loading}
+                onClick={() => {
+                  startMyTraining();
+                }}
+              >
+                {loading ? <GeneralSpinner /> : getStr("startWorkout", 1)}
+              </Button>
+            </Col>
+          </Row>
+        </>
+      )}
+    </Container>
+  );
+};
+
+export const OpenTrainigContainer = ({ training }) => {
+  const [loading, setLoading] = useState(false);
+  const [acceptClose, setAcceptClose] = useState(false);
+
+  async function updateMyTraining(info) {
+    setLoading(true);
+    const response = await updateTraining(info);
+    setLoading(false);
+    return response;
+  }
+
+  async function updateOneValue(input, value) {
+    setLoading(true);
+    training[input] = value;
+    const result = await updateMyTraining(training);
+    setLoading(false);
+    return result;
+  }
+
+  async function updateOneExcercice(pos, info) {
+    const exercices = training.exercices;
+    exercices[pos] = info;
+    training.exercices = exercices;
+    return await updateMyTraining(training);
+  }
+
+  async function closeMyTraining() {
+    setLoading(true);
+    const end = firestoreNow();
+    const minutes = minutesBetweenTwoDates(
+      training.open.toDate(),
+      end.toDate()
+    );
+    training.end = end;
+    training.minutes = minutes;
+    msj(training);
+    const response = await endTraining(training);
+    setLoading(false);
+    return response;
+  }
+
+  return (
+    <>
+      <Row>
+        <Col className="text-center subTitle">{training.name}</Col>
+      </Row>
+      <hr />
+      <Row>
+        <Col className="text-center">
+          <TimerTraining workout={training} />
+        </Col>
       </Row>
       <Row>
-        <Col className="pt-2 pb-2" sm>
+        <Col>
+          {Object.entries(training.exercices).map(([k, exercice]) => (
+            <ExerciceOfTraining
+              exercice={exercice}
+              key={"exerciceTranining" + k + exercice.id}
+              pos={k}
+              update={updateOneExcercice}
+            />
+          ))}
+        </Col>
+      </Row>
+      <Row className="ps-2 pe-2">
+        <Col sm>
           <Form.Group>
-            <Form.Control
-              value={workoutType}
-              as="select"
-              onChange={dropType}
-              onSelect={dropType}
-            >
-              <option id={""} value={""}>
-                {getStr("free", 1)}
-              </option>
-              {Object.entries(workoutsArray).map(([k, work]) => (
-                <option
-                  id={work.id}
-                  key={"wSelect" + k + work.id}
-                  value={work.id}
-                >
-                  {work.name}
-                </option>
-              ))}
-            </Form.Control>
+            <Form.Group>
+              <Form.Label>{getStr("calories", 1)}</Form.Label>
+              <Form.Control
+                placeholder={getStr("calories", 1)}
+                className="alphaContainerLigth"
+                type="number"
+                onChange={(e) => {
+                  var value = e.target.value;
+                  try {
+                    value = parseInt(value);
+                  } catch (e) {
+                    msj(e);
+                    value = 0;
+                  }
+                  if (!value) value = 0;
+                  updateOneValue("calories", value);
+                }}
+                value={training.calories}
+              />
+            </Form.Group>
           </Form.Group>
         </Col>
+        <Col sm>
+          <Form.Group>
+            <Form.Group>
+              <Form.Label>{getStr("km", 1)}</Form.Label>
+              <Form.Control
+                placeholder={getStr("km", 1)}
+                className="alphaContainerLigth"
+                type="number"
+                step={0.1}
+                onChange={(e) => {
+                  var value = e.target.value;
+                  try {
+                    value = parseFloat(value);
+                  } catch (e) {
+                    msj(e);
+                    value = 0;
+                  }
+                  if (!value) value = 0;
+                  updateOneValue("km", value);
+                }}
+                value={training.km}
+              />
+            </Form.Group>
+          </Form.Group>
+        </Col>
+        <Col sm>
+          <Form.Group>
+            <Form.Group>
+              <Form.Label>{getStr("steps", 1)}</Form.Label>
+              <Form.Control
+                placeholder={getStr("steps", 1)}
+                className="alphaContainerLigth"
+                type="number"
+                onChange={(e) => {
+                  var value = e.target.value;
+                  try {
+                    value = parseInt(value);
+                  } catch (e) {
+                    msj(e);
+                    value = 0;
+                  }
+                  if (!value) value = 0;
+                  updateOneValue("steps", value);
+                }}
+                value={training.steps}
+              />
+            </Form.Group>
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row className="ps-2 pe-2">
+        <Col sm>
+          <Form.Group>
+            <Form.Group>
+              {training.info.length > 0 ? (
+                <Form.Label>{getStr("info", 1)}</Form.Label>
+              ) : null}
+              <Form.Control
+                placeholder={getStr("info", 1)}
+                className="alphaContainerLigth"
+                type="text"
+                as="textarea"
+                rows={1}
+                onChange={(e) => {
+                  var value = e.target.value;
+                  if (!value) value = "";
+                  updateOneValue("info", value);
+                }}
+                value={training.info}
+              />
+            </Form.Group>
+          </Form.Group>
+        </Col>
+      </Row>
+      <Row>
         <Col className="pt-2 pb-2 d-grid gap-2" sm>
-          <Button variant="success" disabled={loading}>
-            {getStr("startWorkout", 1)}
+          <Button
+            variant={acceptClose ? "danger" : "warning"}
+            disabled={loading}
+            onClick={() => {
+              setAcceptClose(!acceptClose);
+              if (acceptClose) closeMyTraining();
+            }}
+          >
+            {getStr("endWorkout", 1)}
           </Button>
         </Col>
       </Row>
+    </>
+  );
+};
+
+export const ExerciceOfTraining = ({ exercice, pos, update }) => {
+  const [open, setOpen] = useState(false);
+  const [width] = useWindowSize();
+  const [videoOptions, setVideoOptions] = useState({ width: 300, height: 200 });
+
+  useEffect(() => {
+    const size = getVideoSize(width);
+    setVideoOptions(size);
+  }, [width]);
+
+  async function updateExercice(myExercice) {
+    update(pos, myExercice);
+  }
+
+  async function updateSeries(series) {
+    exercice.series = series;
+    await updateExercice(exercice);
+  }
+
+  return (
+    <Container className=" rounded border border-secondary mt-3 mb-2 ms-0 me-0 p-2">
+      <Row className="ps-2 pe-2 mb-2">
+        <Col
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          {exercice.name} ({exercice.reps}) {open ? "-" : "+"}
+        </Col>
+        <SeriesOfExercice series={exercice.series} update={updateSeries} />
+      </Row>
+      {!open ? null : (
+        <>
+          <Row className="ps-2 pe-2 mb-2">
+            <Col>
+              <small>{exercice.info}</small>
+            </Col>
+          </Row>
+          <hr />
+          <Row className="mb-2">
+            <Col className="text-center">
+              <YouTube
+                videoId={getYouTubeId(exercice.video)}
+                opts={videoOptions}
+                asdf
+              />
+            </Col>
+          </Row>
+        </>
+      )}
     </Container>
   );
+};
+
+export const SeriesOfExercice = ({ series, update }) => {
+  const [loading, setLoading] = useState();
+  async function updateSerie(pos, status) {
+    setLoading(true);
+    var newStatus = 1;
+    status == 1 ? (newStatus = 0) : (newStatus = 1);
+    const newArray = series;
+    newArray[pos] = { status: newStatus };
+    const response = await update(newArray);
+    setLoading(false);
+    return response;
+  }
+
+  return Object.entries(series).map(([k, serie]) => (
+    <Col
+      key={"serieExe" + k}
+      className="ps-1 pe-1"
+      style={{ maxWidth: "40px" }}
+    >
+      <Button
+        size="sm"
+        className=""
+        disabled={loading}
+        variant={serie.status == 0 ? "danger" : "success"}
+        onClick={() => {
+          updateSerie(k, serie.status);
+        }}
+      >
+        {parseInt(k) + 1}
+      </Button>
+    </Col>
+  ));
 };
 
 export const WorkoutContainer = ({ customClass }) => {
@@ -212,6 +563,13 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
     return response;
   }
 
+  async function deleteMyWorkout() {
+    setLoading(true);
+    await deleteWorkout(work.id);
+    await getWorkoutsList();
+    setLoading(false);
+  }
+
   return (
     <Container
       className={
@@ -234,6 +592,9 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
               variant={acceptDelete ? "danger" : "dark"}
               onClick={() => {
                 setAcceptDelete(!acceptDelete);
+                if (acceptDelete) {
+                  deleteMyWorkout();
+                }
               }}
               disabled={loading}
             >
@@ -302,6 +663,12 @@ export const ExercicesContainer = ({ work, updateExercices }) => {
     return await updateExercices(myArrayExercices);
   }
 
+  async function updateExercice(pos, info) {
+    const myArrayExercices = work.exercices;
+    myArrayExercices[pos] = info;
+    return await updateExercices(myArrayExercices);
+  }
+
   return (
     <Container className="mt-3 back-02 rounded p-2">
       <Row className="mt-3 mb-3">
@@ -314,6 +681,8 @@ export const ExercicesContainer = ({ work, updateExercices }) => {
             <ExerciceLine
               key={"ExcerciceList" + k + exercice.id}
               exercice={exercice}
+              pos={k}
+              editExercice={updateExercice}
             />
           ))}
         </Col>
@@ -327,6 +696,7 @@ export const ExerciceForm = ({ addExercice }) => {
   const [info, setInfo] = useState("");
   const [video, setVideo] = useState("");
   const [reps, setReps] = useState(1);
+  const [series, setSeries] = useState(1);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [infoError, setInfoError] = useState({ pos: 0, text: "" });
@@ -347,7 +717,8 @@ export const ExerciceForm = ({ addExercice }) => {
       setInfo("");
       setName("");
       setVideo("");
-      setReps(0);
+      setReps(1);
+      setSeries(1);
       await delay(3);
       setOpen(false);
     } else {
@@ -450,6 +821,28 @@ export const ExerciceForm = ({ addExercice }) => {
                 />
               </Form.Group>
             </Col>
+            <Col className="mt-2" sm>
+              <Form.Group>
+                <Form.Label>{getStr("series", 1)}</Form.Label>
+                <Form.Control
+                  placeholder={getStr("series", 1)}
+                  className="alphaContainerLigth"
+                  type="number"
+                  onChange={(e) => {
+                    var value = e.target.value;
+                    try {
+                      value = parseInt(value);
+                    } catch (e) {
+                      msj(e);
+                      value = 1;
+                    }
+                    if (!value) value = 0;
+                    setSeries(value);
+                  }}
+                  value={series}
+                />
+              </Form.Group>
+            </Col>
             <Col className={blockButton() + " pt-4 pb-0"}>
               <Button
                 variant="success"
@@ -471,18 +864,51 @@ export const ExerciceForm = ({ addExercice }) => {
   );
 };
 
-export const ExerciceLine = ({ exercice }) => {
+export const ExerciceLine = ({ exercice, pos, editExercice }) => {
   const [width] = useWindowSize();
   const [videoOptions, setVideoOptions] = useState({ width: 300, height: 200 });
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    if (width > 780) {
-      setVideoOptions({ width: 580, height: 580 / 1.6 });
-    } else {
-      setVideoOptions({ width: width * 0.5, height: (width * 0.5) / 1.6 });
-    }
+    const size = getVideoSize(width);
+    setVideoOptions(size);
   }, [width]);
+
+  async function setReps(reps) {
+    setLoading(true);
+    exercice.reps = reps;
+    await editExercice(pos, exercice);
+    setLoading(false);
+  }
+
+  async function setSeries(series) {
+    setLoading(true);
+    exercice.series = series;
+    await editExercice(pos, exercice);
+    setLoading(false);
+  }
+
+  async function setVideo(video) {
+    setLoading(true);
+    exercice.video = video;
+    await editExercice(pos, exercice);
+    setLoading(false);
+  }
+
+  async function setInfo(info) {
+    setLoading(true);
+    exercice.info = info;
+    await editExercice(pos, exercice);
+    setLoading(false);
+  }
+
+  async function setName(name) {
+    setLoading(true);
+    exercice.name = name;
+    await editExercice(pos, exercice);
+    setLoading(false);
+  }
 
   return (
     <Container className="mt-1 border border-secondary rounded back-01 p-2">
@@ -492,23 +918,122 @@ export const ExerciceLine = ({ exercice }) => {
         }}
       >
         <Col>
-          {exercice.name} {open ? " -" : " +"}
+          <small>
+            {exercice.name}
+            {open ? " -" : " +"}
+          </small>
         </Col>
       </Row>
       {!open ? null : (
         <>
+          <hr />
           <Row>
             <Col>
-              <small>
-                {getStr("info", 1)}: {exercice.info}
-              </small>
+              <Form.Group>
+                {exercice.name.length > 0 ? (
+                  <Form.Label>{getStr("name", 1)}</Form.Label>
+                ) : null}
+                <Form.Control
+                  placeholder={getStr("name", 1)}
+                  className="alphaContainerLigth"
+                  type="text"
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                  value={exercice.name}
+                />
+              </Form.Group>
             </Col>
           </Row>
           <Row>
             <Col>
-              <small>
-                {getStr("reps", 1)}: {exercice.reps}
-              </small>
+              <Form.Group>
+                {exercice.info.length > 0 ? (
+                  <Form.Label>{getStr("info", 1)}</Form.Label>
+                ) : null}
+                <Form.Control
+                  placeholder={getStr("info", 1)}
+                  className="alphaContainerLigth"
+                  type="text"
+                  rows={1}
+                  as={"textarea"}
+                  onChange={(e) => {
+                    setInfo(e.target.value);
+                  }}
+                  value={exercice.info}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>{getStr("reps", 1)}</Form.Label>
+                <Form.Control
+                  placeholder={getStr("reps", 1)}
+                  className="alphaContainerLigth"
+                  type="number"
+                  onChange={(e) => {
+                    var value = e.target.value;
+                    try {
+                      value = parseInt(value);
+                    } catch (e) {
+                      msj(e);
+                      value = 1;
+                    }
+                    if (!value) value = 0;
+                    setReps(value);
+                  }}
+                  value={exercice.reps}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group>
+                <Form.Label>{getStr("series", 1)}</Form.Label>
+                <Form.Control
+                  placeholder={getStr("series", 1)}
+                  className="alphaContainerLigth"
+                  type="number"
+                  onChange={(e) => {
+                    var value = e.target.value;
+                    try {
+                      value = parseInt(value);
+                    } catch (e) {
+                      msj(e);
+                      value = 1;
+                    }
+                    if (!value) value = 0;
+                    setSeries(value);
+                  }}
+                  value={exercice.series}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Group>
+                {exercice.video.length > 0 ? (
+                  <Form.Label>{getStr("youTubeVideoLink", 1)}</Form.Label>
+                ) : null}
+                <Form.Control
+                  placeholder={getStr("youTubeVideoLink", 1)}
+                  className="alphaContainerLigth"
+                  type="text"
+                  onChange={(e) => {
+                    setVideo(e.target.value);
+                  }}
+                  value={exercice.video}
+                />
+              </Form.Group>
+            </Col>
+          </Row>
+          <Row>
+            <Col className={blockButton() + " text-center mt-2 mb-2"}>
+              {loading ? <GeneralSpinner /> : null}
             </Col>
           </Row>
           <Row>
