@@ -91,7 +91,11 @@ const enJSON = {
   percentual: "percentual",
   average: "average",
   minutesCalculate: "(zero to auto)",
-  stepsByWorkout: "steps by workout"
+  stepsByWorkout: "steps by workout",
+  exampleWorkoutName: "example workout",
+  squats: "squats",
+  pushups: "push-ups",
+  crunches: "crunches"
 };
 
 export const en = (str) => {

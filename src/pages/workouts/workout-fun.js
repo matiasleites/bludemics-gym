@@ -6,6 +6,7 @@ import {
   updateFirestoreDocument
 } from "../../config/firebase";
 import { userId } from "../../config/general-fun";
+import { getStr } from "../../lang/lang-fun";
 
 export async function getUserWorkoutsList() {
   const uid = userId();
@@ -16,10 +17,9 @@ export async function getUserWorkoutsList() {
   return [];
 }
 
-export async function createWorkout(name) {
+export async function createWorkout(name, exercices = []) {
   const uid = userId();
   if (uid) {
-    const exercices = [];
     const data = { exercices, name, uid };
     const response = await insertFirestore(`users/${uid}/workouts`, data);
     return response;
@@ -156,4 +156,34 @@ export async function getStoredTrainings(start, end) {
     return positionResponse;
   }
   return false;
+}
+
+export async function addExampleWorkout() {
+  const name = getStr("exampleWorkoutName", 1);
+  const exercices = [];
+
+  exercices.push({
+    info: "Make some squats wiht at least 20kg",
+    name: getStr("squats", 1),
+    reps: 10,
+    series: 3,
+    video: "https://www.youtube.com/watch?v=ultWZbUMPL8"
+  });
+
+  exercices.push({
+    info: "Do push-ups",
+    name: getStr("pushups", 1),
+    reps: 12,
+    series: 3,
+    video: "https://www.youtube.com/watch?v=0pkjOk0EiAk"
+  });
+
+  exercices.push({
+    info: "Some crunches?",
+    name: getStr("crunches", 1),
+    reps: 15,
+    series: 3,
+    video: "https://www.youtube.com/watch?v=Xyd_fa5zoEU"
+  });
+  return await createWorkout(name, exercices);
 }

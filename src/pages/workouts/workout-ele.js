@@ -708,6 +708,7 @@ export const ExercicesContainer = ({ work, updateExercices }) => {
         <Col>{getStr("exercices", 1) + ": " + work.name}</Col>
       </Row>
       <ExerciceForm addExercice={addExercice} />
+      <hr />
       <Row>
         <Col>
           {Object.entries(work.exercices).map(([k, exercice]) => (
@@ -768,7 +769,7 @@ export const ExerciceForm = ({ addExercice }) => {
         }}
       >
         <Col>
-          <small>
+          <small className="ps-3">
             {getStr("addExercice", 1)} {open ? "-" : "+"}
           </small>
         </Col>
