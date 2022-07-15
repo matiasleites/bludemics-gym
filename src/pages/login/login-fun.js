@@ -4,6 +4,7 @@ import {
 } from "firebase/auth";
 import { auth, firestoreNow, insertFirestore } from "../../config/firebase";
 import { msj } from "../../config/general-fun";
+import { addExampleWorkout } from "../workouts/workout-fun";
 
 export async function registerUser(email, pass) {
   var info = "";
@@ -13,7 +14,11 @@ export async function registerUser(email, pass) {
       const create = await insertFirestore(`users/${resp.user.uid}`, {
         created: firestoreNow()
       });
-      success = create;
+      if (create) {
+        success = await addExampleWorkout();
+      } else {
+        success = create;
+      }
     })
     .catch((error) => {
       msj(error);

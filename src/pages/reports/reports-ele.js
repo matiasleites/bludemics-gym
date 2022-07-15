@@ -141,6 +141,7 @@ export const ReportsContainer = ({ update }) => {
               </Col>
             </Row>
           </Container>
+
           <Container className="border border-secondary rounded p-2 mt-2">
             <Row className="mb-2">
               <Col>{getStr("average", 2)}</Col>
@@ -165,66 +166,68 @@ export const ReportsContainer = ({ update }) => {
               </Col>
             </Row>
           </Container>
-          <Container className="mt-2 border border-secondary rounded pt-2">
-            <Row>
-              <Col className="text-center">{getStr("stepsByWorkout", 1)}</Col>
-            </Row>
-            <Row>
-              <Col className="text-center">
-                <VictoryChart
-                  domainPadding={0}
-                  theme={VictoryTheme.material}
-                  height={videoOptions.height}
-                  width={videoOptions.width}
-                  style={{
-                    grid: {
-                      fill: "transparent",
-                      stroke: "transparent",
-                      strokeWidht: 0
-                    }
-                  }}
-                  containerComponent={<VictoryContainer responsive={false} />}
-                >
-                  <VictoryAxis
+          {stepsGraphic && stepsGraphic.length > 1 ? (
+            <Container className="mt-2 border border-secondary rounded pt-2">
+              <Row>
+                <Col className="text-center">{getStr("stepsByWorkout", 1)}</Col>
+              </Row>
+              <Row>
+                <Col className="text-center">
+                  <VictoryChart
+                    domainPadding={0}
+                    theme={VictoryTheme.material}
+                    height={videoOptions.height}
+                    width={videoOptions.width}
                     style={{
-                      grid: {
-                        stroke: "transparente",
-                        strokeWidht: 0
-                      }
-                    }}
-                    tickValues={Object.entries(stepsGraphic).map(
-                      // eslint-disable-next-line no-unused-vars
-                      ([k, data]) => data.quarter
-                    )}
-                  />
-                  <VictoryAxis
-                    style={{
-                      grid: {
-                        fill: "transparent",
-                        stroke: "rgba(255,255,255, 0.2)",
-                        strokeWidht: 0.1
-                      }
-                    }}
-                    dependentAxis
-                    tickFormat={(x) => `${x}`}
-                  />
-                  <VictoryLine
-                    data={stepsGraphic}
-                    x="quarter"
-                    y="earnings"
-                    style={{
-                      data: { stroke: "#a12626" },
                       grid: {
                         fill: "transparent",
                         stroke: "transparent",
                         strokeWidht: 0
                       }
                     }}
-                  />
-                </VictoryChart>
-              </Col>
-            </Row>
-          </Container>
+                    containerComponent={<VictoryContainer responsive={false} />}
+                  >
+                    <VictoryAxis
+                      style={{
+                        grid: {
+                          stroke: "transparente",
+                          strokeWidht: 0
+                        }
+                      }}
+                      tickValues={Object.entries(stepsGraphic).map(
+                        // eslint-disable-next-line no-unused-vars
+                        ([k, data]) => data.quarter
+                      )}
+                    />
+                    <VictoryAxis
+                      style={{
+                        grid: {
+                          fill: "transparent",
+                          stroke: "rgba(255,255,255, 0.2)",
+                          strokeWidht: 0.1
+                        }
+                      }}
+                      dependentAxis
+                      tickFormat={(x) => `${x}`}
+                    />
+                    <VictoryLine
+                      data={stepsGraphic}
+                      x="quarter"
+                      y="earnings"
+                      style={{
+                        data: { stroke: "#a12626" },
+                        grid: {
+                          fill: "transparent",
+                          stroke: "transparent",
+                          strokeWidht: 0
+                        }
+                      }}
+                    />
+                  </VictoryChart>
+                </Col>
+              </Row>
+            </Container>
+          ) : null}
           <ReportWorkouts workouts={trainings} />
         </>
       ) : null}

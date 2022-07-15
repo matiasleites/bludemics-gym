@@ -66,6 +66,10 @@ code {
   background-color:rgba(161,38,38, 0.2);
 }
 
+.back-03 {
+  background-color:rgba(85,11,236, 0.4);
+}
+
 .backGeneric {
   min-height: 100vh;
 }
@@ -143,8 +147,8 @@ code {
    border-radius: 0px;
    border: none !important;
    border-bottom: 1.5px solid #FFF !important;
-   background-color: rgba(0,0,0, 0.0);
    outline: none !important;
+   background-color: rgba(0,0,0, 0.0);
    color: #a0d18c;
    padding-left: 10px;
 }
@@ -159,11 +163,11 @@ code {
 
 .alphaContainerDark textarea:focus {
   outline: none !important;
-  background-color: rgba(0,0,0, 0.0);
   border: none !important;
+  box-shadow: 0 0 0px #719ECE;
   border-bottom: 2px solid #FFF !important;
   color: #2d9fd9;
-  box-shadow: 0 0 0px #719ECE;
+  background-color: rgba(0,0,0, 0.0);
 }
 
 .alphaContainerDark label {
@@ -171,6 +175,36 @@ code {
   font-size: clamp(10px, 5vw, 12px);
   margin: 0%;
   padding: 0%;
+}
+
+.alphaContainerDark select{
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+  border-radius: 0px;
+  border: none !important;
+  border-bottom: 1.5px solid #FFF !important;
+  outline: none !important;
+  color: #FFF;
+  background-color: rgba(255,255,255, 0.0) !important;
+}
+
+.alphaContainerDark option{
+  outline: none !important;
+  border: none !important;
+  color: #FFF;
+  background: #24043f !important;
+}
+
+
+
+.alphaContainerDark select:focus{
+  outline: none !important;
+  border: none !important;
+  box-shadow: 0 0 0px #719ECE;
+  border-bottom: 2px solid #FFF !important;
+  color: #2d9fd9;
+  background-color: rgba(255,255,255, 0.0) !important;
+  
 }
 
 input:-webkit-autofill { 
