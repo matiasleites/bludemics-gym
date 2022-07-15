@@ -1,13 +1,20 @@
+html {
+  overscroll-behavior: none;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Open Sans', 
+    serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-color: rgba(0, 0, 0, 0.0);
   background-image: linear-gradient(315deg, #a12626, #550bec);
   min-height: 100vh;
+  overscroll-behavior: none;
 }
+
+@import url('https://fonts.googleapis.com/css2?family=Anek+Gujarati&family=Explora&family=Lora&family=Open+Sans&family=Roboto:wght@400;700&display=swap');
 
 ::-webkit-scrollbar {
   width: 10px;
@@ -29,14 +36,17 @@ code {
 }
 
 .title {
+  font-family: 'Roboto', serif;
   font-size: clamp(18px, 10vw, 32px);
 }
 
 .subTitle {
+  font-family: 'Roboto', serif;
   font-size: clamp(12px, 5vw, 20px);
 }
 
 .text {
+  font-family: 'Open Sans', serif;
   font-size: clamp(10px, 4vw, 18px);
 }
 
@@ -105,6 +115,27 @@ code {
   box-shadow: 0 0 0px #719ECE;
 }
 
+.alphaContainerDark input:disabled {
+  outline: none !important;
+  background-color: rgba(0,0,0, 0.0);
+  border: none !important;
+  border-bottom: 2px solid #FFF !important;
+  color: #2d9fd9;
+  box-shadow: 0 0 0px #719ECE;
+}
+
+.alphaContainerDark input:read-only {
+  outline: none !important;
+  background-color: rgba(0,0,0, 0.0);
+  border: none !important;
+  border-bottom: 2px solid #FFF !important;
+  color: #a0d18c;
+  box-shadow: 0 0 0px #719ECE;
+}
+
+::-webkit-calendar-picker-indicator {
+  filter: invert(1);
+}
 
 .alphaContainerDark textarea {
   -webkit-border-radius: 0px;

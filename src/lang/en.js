@@ -83,7 +83,15 @@ const enJSON = {
   endWorkout: "end workout",
   km: "km",
   minutes: "minutes",
-  steps: "steps"
+  steps: "steps",
+  reports: "reports",
+  start: "start",
+  end: "end",
+  totals: "totals",
+  percentual: "percentual",
+  average: "average",
+  minutesCalculate: "(zero to auto)",
+  stepsByWorkout: "steps by workout"
 };
 
 export const en = (str) => {

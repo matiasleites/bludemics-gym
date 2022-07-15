@@ -7,7 +7,10 @@ import {
   delay,
   GeneralInformation,
   GeneralSpinner,
+  getDayOfFirebaseDate,
+  getVideoSize,
   getYouTubeId,
+  minutesBetweenTwoDates,
   msj,
   useWindowSize
 } from "../../config/general-fun";
@@ -18,9 +21,7 @@ import {
   endTraining,
   getCurrentTraining,
   getUserWorkoutsList,
-  getVideoSize,
   getWorkout,
-  minutesBetweenTwoDates,
   startTraining,
   traninigElapsedTime,
   updateTraining,
@@ -41,7 +42,7 @@ export const TimerTraining = ({ workout }) => {
   return <div className="title">{timer}</div>;
 };
 
-export const StartWorkoutContainer = ({ customClass }) => {
+export const StartWorkoutContainer = ({ customClass, setUpdate }) => {
   const [workoutType, setWorkoutType] = useState("");
   const [loading, setLoading] = useState(false);
   const [workoutsArray, setWorkoutsArray] = useState([]);
@@ -104,13 +105,17 @@ export const StartWorkoutContainer = ({ customClass }) => {
     const response = await startTraining(info);
     setLoading(false);
     getWorkoutsList();
+    setUpdate();
     return response;
   }
 
   return (
     <Container className={customClass}>
       {currentTraining && currentTraining.open ? (
-        <OpenTrainigContainer training={currentTraining} />
+        <OpenTrainigContainer
+          training={currentTraining}
+          setUpdate={getWorkoutsList}
+        />
       ) : (
         <>
           <Row className="mb-2">
@@ -158,7 +163,7 @@ export const StartWorkoutContainer = ({ customClass }) => {
   );
 };
 
-export const OpenTrainigContainer = ({ training }) => {
+export const OpenTrainigContainer = ({ training, setUpdate }) => {
   const [loading, setLoading] = useState(false);
   const [acceptClose, setAcceptClose] = useState(false);
 
@@ -187,15 +192,16 @@ export const OpenTrainigContainer = ({ training }) => {
   async function closeMyTraining() {
     setLoading(true);
     const end = firestoreNow();
-    const minutes = minutesBetweenTwoDates(
-      training.open.toDate(),
-      end.toDate()
-    );
+    var minutes = training.minutes;
+    if (minutes <= 0) {
+      minutes = minutesBetweenTwoDates(training.open.toDate(), end.toDate());
+    }
     training.end = end;
     training.minutes = minutes;
     msj(training);
     const response = await endTraining(training);
     setLoading(false);
+    setUpdate();
     return response;
   }
 
@@ -268,6 +274,33 @@ export const OpenTrainigContainer = ({ training }) => {
                   updateOneValue("km", value);
                 }}
                 value={training.km}
+              />
+            </Form.Group>
+          </Form.Group>
+        </Col>
+        <Col sm>
+          <Form.Group>
+            <Form.Group>
+              <Form.Label>
+                {getStr("minutes", 1)}{" "}
+                <small>{getStr("minutesCalculate", 1)}</small>
+              </Form.Label>
+              <Form.Control
+                placeholder={getStr("minutes", 1)}
+                className="alphaContainerLigth"
+                type="number"
+                onChange={(e) => {
+                  var value = e.target.value;
+                  try {
+                    value = parseInt(value);
+                  } catch (e) {
+                    msj(e);
+                    value = 0;
+                  }
+                  if (!value) value = 0;
+                  updateOneValue("minutes", value);
+                }}
+                value={training.minutes}
               />
             </Form.Group>
           </Form.Group>
@@ -427,12 +460,12 @@ export const SeriesOfExercice = ({ series, update }) => {
   ));
 };
 
-export const WorkoutContainer = ({ customClass }) => {
+export const WorkoutContainer = ({ customClass, update }) => {
   const [workoutsArray, setWorkoutsArray] = useState([]);
 
   useEffect(() => {
     getWorkoutsList();
-  }, [setWorkoutsArray]);
+  }, [setWorkoutsArray, update]);
 
   async function getWorkoutsList() {
     const myWorks = await getUserWorkoutsList();
@@ -646,7 +679,7 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
               </Button>
             </Col>
           </Row>
-          <GeneralInformation info={info} />
+          <GeneralInformation info={info} pos={1} />
           <ExercicesContainer work={work} updateExercices={updateExercices} />
         </>
       ) : null}
@@ -1050,4 +1083,100 @@ export const ExerciceLine = ({ exercice, pos, editExercice }) => {
       )}
     </Container>
   );
+};
+
+export const SimpleLineWorkout = ({ work, pos }) => {
+  const [open, setOpen] = useState(false);
+
+  return (
+    <Container
+      className={
+        " mt-2 rounded p-2 border back-01" +
+        (open ? " border-secondary shadow" : " border-secondary")
+      }
+    >
+      <Row
+        onClick={() => {
+          setOpen(!open);
+        }}
+      >
+        <Col>
+          {pos} {work.name} <small>{getDayOfFirebaseDate(work.open)}</small>
+          {open ? " -" : " +"}
+        </Col>
+      </Row>
+      {open ? (
+        <>
+          <hr />
+          <Row className="mt-2">
+            <Col className="mt-0" md>
+              {getStr("name", 1)}: {work.name}
+            </Col>
+          </Row>
+          <Row>
+            <Col className="mt-0" md>
+              {getStr("info", 1)}: {work.info}
+            </Col>
+          </Row>
+          <Row>
+            <Col className="mt-0" sm>
+              {getStr("calories", 1)}: {work.calories}
+            </Col>
+            <Col className="mt-0" sm>
+              {getStr("km", 1)}: {work.km}
+            </Col>
+            <Col className="mt-0" sm>
+              {getStr("minutes", 1)}: {work.minutes}
+            </Col>
+            <Col className="mt-0" sm>
+              {getStr("steps", 1)}: {work.steps}
+            </Col>
+          </Row>
+          <SimpleExercicesContainer work={work} />
+        </>
+      ) : null}
+    </Container>
+  );
+};
+
+export const SimpleExercicesContainer = ({ work }) => {
+  if (!work) return null;
+
+  return work.exercices && work.exercices.length > 0 ? (
+    <Container className="mt-2 back-02 rounded p-2">
+      <Row className="mt-0 mb-3">
+        <Col>{getStr("exercices", 1)}</Col>
+      </Row>
+      {Object.entries(work.exercices).map(([k, exercice]) => (
+        <Row
+          key={"ExcerciceInfoList" + k + exercice.id}
+          className="border border-secondary pt-1 pb-1 ms-0 me-0 rounded"
+        >
+          <Col>{exercice.name}</Col>
+          <SimpleSeriesOfExercice series={exercice.series} />
+        </Row>
+      ))}
+    </Container>
+  ) : null;
+};
+
+export const SimpleSeriesOfExercice = ({ series }) => {
+  if (series.length < 1) return null;
+
+  return Object.entries(series).map(([k, serie]) => (
+    <Col
+      key={"serieExe" + k}
+      className="ps-1 pe-1"
+      style={{ maxWidth: "40px" }}
+    >
+      <Button
+        size="sm"
+        className=""
+        disabled={true}
+        variant={serie.status == 0 ? "secondary" : "success"}
+      >
+        {parseInt(k) + 1}
+      </Button>
+    </Col>
+  ));
 };

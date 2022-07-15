@@ -1,3 +1,4 @@
+import { where } from "firebase/firestore";
 import {
   deleteFirestoreDocument,
   getFirestoreDocument,
@@ -134,15 +135,25 @@ export function traninigElapsedTime(workout) {
   return minutesFormated + ":" + secondsFormated;
 }
 
-export function minutesBetweenTwoDates(start, end) {
-  const diff = end.getTime() - start.getTime();
-  return Math.floor(diff / (1000 * 60));
-}
-
-export function getVideoSize(width) {
-  if (width > 780) {
-    return { width: 580, height: 580 / 1.6 };
-  } else {
-    return { width: width * 0.5, height: (width * 0.5) / 1.6 };
+export async function getStoredTrainings(start, end) {
+  const uid = userId();
+  if (uid) {
+    if (!start) start = new Date();
+    start.setHours(0, 0, 0, 0);
+    if (!end) end = new Date();
+    end.setHours(23, 59, 59, 0);
+    var response = await getFirestoreDocument(
+      `users/${uid}/stored`,
+      where("open", ">=", start),
+      where("open", "<=", end)
+    );
+    const positionResponse = [];
+    if (response)
+      response = response.map(function (tranining, index) {
+        tranining.pos = index + 1;
+        positionResponse.push(tranining);
+      });
+    return positionResponse;
   }
+  return false;
 }
