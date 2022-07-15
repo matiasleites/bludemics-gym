@@ -11,13 +11,18 @@ import {
   StartWorkoutContainer,
   WorkoutContainer
 } from "../workouts/workout-ele";
+import { ReportsContainer } from "../reports/reports-ele";
 
 const helmetData = new HelmetData({});
 function Home() {
   const [width] = useWindowSize();
   const [small, setSmall] = useState(width < 400 ? true : false);
-  // eslint-disable-next-line no-unused-vars
   const { user, isLogged } = useAuth();
+  const [update, setUpdate] = useState(false);
+
+  function newUpdate() {
+    setUpdate(!update);
+  }
 
   useEffect(() => {
     if (width < 500) {
@@ -72,14 +77,21 @@ function Home() {
               "text-start alphaContainerDark p-3 mt-2" + (small ? " " : "")
             }
           >
-            <StartWorkoutContainer />
+            <StartWorkoutContainer setUpdate={newUpdate} />
           </Container>
           <Container
             className={
               "text-start alphaContainerDark p-3 mt-2" + (small ? " " : "")
             }
           >
-            <WorkoutContainer />
+            <WorkoutContainer update={update} />
+          </Container>
+          <Container
+            className={
+              "text-start alphaContainerDark p-3 mt-2" + (small ? " " : "")
+            }
+          >
+            <ReportsContainer update={update} />
           </Container>
         </>
       ) : null}

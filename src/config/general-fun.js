@@ -1,9 +1,8 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Spinner, Row, Col } from "react-bootstrap";
 
-export const formatedNumber = (number, decimals) => {
+export const formatedNumber = (number, decimals = 2) => {
   if (!number) return 0;
-  if (!decimals) decimals = 2;
   try {
     return number.toFixed(decimals);
   } catch (g) {
@@ -102,4 +101,52 @@ export function getYouTubeId(url) {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
   return match && match[2].length === 11 ? match[2] : undefined;
+}
+
+export function dateToInputString(date) {
+  var d = new Date(date),
+    month = "" + (d.getMonth() + 1),
+    day = "" + d.getDate(),
+    year = d.getFullYear();
+  if (month.length < 2) month = "0" + month;
+  if (day.length < 2) day = "0" + day;
+  return [year, month, day].join("-");
+}
+
+export function minutesBetweenTwoDates(start, end) {
+  const diff = end.getTime() - start.getTime();
+  return Math.floor(diff / (1000 * 60));
+}
+
+export function getVideoSize(width) {
+  if (width > 780) {
+    return { width: 580, height: 580 / 1.6 };
+  } else {
+    return { width: width * 0.5, height: (width * 0.5) / 1.6 };
+  }
+}
+
+export function getGraphicSize(width) {
+  if (width > 780) {
+    return { width: 630, height: 630 / 1.6 };
+  } else {
+    return { width: width * 0.8, height: (width * 0.8) / 1.6 };
+  }
+}
+
+export function getRandomInt(min = 1, max = 999) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+export function getDayOfFirebaseDate(date) {
+  try {
+    date = date.toDate().toLocaleString();
+    date = date.slice(0, 10);
+    return date;
+  } catch (g) {
+    msj(g);
+    return "";
+  }
 }
