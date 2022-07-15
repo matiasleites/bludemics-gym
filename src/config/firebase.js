@@ -2,6 +2,7 @@ import { initializeApp } from "firebase/app";
 import {
   addDoc,
   collection,
+  deleteDoc,
   doc,
   getDoc,
   getDocs,
@@ -46,7 +47,7 @@ export async function getFirebaseFileUrl(url) {
   return task;
 }
 
-export const getFirestoreDocument = async (url, data, data2, data3, data4) => {
+export async function getFirestoreDocument(url, data, data2, data3, data4) {
   const divisions = await url.split("/");
   var response = [];
   try {
@@ -93,9 +94,9 @@ export const getFirestoreDocument = async (url, data, data2, data3, data4) => {
     response = false;
   }
   return response;
-};
+}
 
-export const insertFirestore = async (url, data) => {
+export async function insertFirestore(url, data) {
   const divisions = await url.split("/");
   var response = false;
   try {
@@ -116,9 +117,9 @@ export const insertFirestore = async (url, data) => {
     msj(g);
   }
   return response;
-};
+}
 
-export const updateFirestoreDocument = async (url, data, force) => {
+export async function updateFirestoreDocument(url, data, force) {
   if (!force) force = false;
   var response = false;
   try {
@@ -136,4 +137,17 @@ export const updateFirestoreDocument = async (url, data, force) => {
     msj(g);
   }
   return response;
-};
+}
+
+export async function deleteFirestoreDocument(url) {
+  var response = false;
+  try {
+    const myDoc = doc(firestoredb, url);
+    await deleteDoc(myDoc).then(() => {
+      response = true;
+    });
+  } catch (g) {
+    msj(g);
+  }
+  return response;
+}

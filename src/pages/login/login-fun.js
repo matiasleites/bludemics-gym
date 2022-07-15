@@ -2,15 +2,18 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword
 } from "firebase/auth";
-import { auth } from "../../config/firebase";
+import { auth, firestoreNow, insertFirestore } from "../../config/firebase";
 import { msj } from "../../config/general-fun";
 
 export async function registerUser(email, pass) {
   var info = "";
   var success = false;
   await createUserWithEmailAndPassword(auth, email, pass)
-    .then(() => {
-      success = true;
+    .then(async (resp) => {
+      const create = await insertFirestore(`users/${resp.user.uid}`, {
+        created: firestoreNow()
+      });
+      success = create;
     })
     .catch((error) => {
       msj(error);
