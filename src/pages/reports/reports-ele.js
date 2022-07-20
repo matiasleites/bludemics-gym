@@ -131,6 +131,9 @@ export const ReportsContainer = ({ update }) => {
                 {getStr("calories", 1)}: {report.calories}
               </Col>
               <Col sm>
+                {getStr("kg", 1)}: {report.kg}
+              </Col>
+              <Col sm>
                 {getStr("km", 1)}: {report.km}
               </Col>
               <Col sm>
@@ -151,6 +154,10 @@ export const ReportsContainer = ({ update }) => {
               <Col sm>
                 {getStr("calories", 1)}:{" "}
                 {formatedNumber(report.calories / report.trainings, 0)}
+              </Col>
+              <Col sm>
+                {getStr("kg", 1)}:{" "}
+                {formatedNumber(report.kg / report.trainings)}
               </Col>
               <Col sm>
                 {getStr("km", 1)}:{" "}

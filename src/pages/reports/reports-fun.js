@@ -5,6 +5,7 @@ export function makeReports(trainings) {
     trainings: trainings.length,
     steps: 0,
     km: 0,
+    kg: 0,
     calories: 0,
     minutes: 0
   };
@@ -13,6 +14,7 @@ export function makeReports(trainings) {
     trainings.map(function (training) {
       response.steps = response.steps + training.steps;
       response.km = response.km + training.km;
+      response.kg = response.kg + (training.kg ? training.kg : 0);
       response.calories = response.calories + training.calories;
       response.minutes = response.minutes + training.minutes;
     });

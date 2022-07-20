@@ -96,6 +96,7 @@ export const StartWorkoutContainer = ({ customClass, setUpdate }) => {
       exercices,
       name,
       calories: 0,
+      kg: 0,
       km: 0,
       minutes: 0,
       end: false,
@@ -249,6 +250,31 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
                   updateOneValue("calories", value);
                 }}
                 value={training.calories}
+              />
+            </Form.Group>
+          </Form.Group>
+        </Col>
+        <Col sm>
+          <Form.Group>
+            <Form.Group>
+              <Form.Label>{getStr("kg", 1)}</Form.Label>
+              <Form.Control
+                placeholder={getStr("kg", 1)}
+                className="alphaContainerLigth"
+                type="number"
+                step={0.1}
+                onChange={(e) => {
+                  var value = e.target.value;
+                  try {
+                    value = parseFloat(value);
+                  } catch (e) {
+                    msj(e);
+                    value = 0;
+                  }
+                  if (!value) value = 0;
+                  updateOneValue("kg", value);
+                }}
+                value={training.kg}
               />
             </Form.Group>
           </Form.Group>
@@ -743,7 +769,7 @@ export const ExerciceForm = ({ addExercice }) => {
     }
 
     setLoading(true);
-    const infoData = { info, name, reps, video };
+    const infoData = { info, name, reps, video, series };
     const response = await addExercice(infoData);
     setLoading(false);
     if (response) {
@@ -1125,6 +1151,9 @@ export const SimpleLineWorkout = ({ work, pos }) => {
             </Col>
             <Col className="mt-0" sm>
               {getStr("km", 1)}: {work.km}
+            </Col>
+            <Col className="mt-0" sm>
+              {getStr("kg", 1)}: {work.kg}
             </Col>
             <Col className="mt-0" sm>
               {getStr("minutes", 1)}: {work.minutes}
