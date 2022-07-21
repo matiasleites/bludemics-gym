@@ -81,6 +81,7 @@ const enJSON = {
   video: "video",
   serie: "serie",
   endWorkout: "end workout",
+  kg: "kg",
   km: "km",
   minutes: "minutes",
   steps: "steps",
