@@ -42,7 +42,7 @@ export const TimerTraining = ({ workout }) => {
   return <div className="title">{timer}</div>;
 };
 
-export const StartWorkoutContainer = ({ customClass, setUpdate }) => {
+export const StartWorkoutContainer = ({ customClass, setUpdate, workouts }) => {
   const [workoutType, setWorkoutType] = useState("");
   const [loading, setLoading] = useState(false);
   const [workoutsArray, setWorkoutsArray] = useState([]);
@@ -55,9 +55,21 @@ export const StartWorkoutContainer = ({ customClass, setUpdate }) => {
 
   useEffect(() => {
     getWorkoutsList();
-  }, [setWorkoutsArray]);
+  }, [workouts]);
 
   async function getWorkoutsList() {
+    if (!workouts) {
+      setLoading(true);
+      const myWorks = await getUserWorkoutsList();
+      setWorkoutsArray([...myWorks]);
+      setLoading(false);
+    } else {
+      setWorkoutsArray([...workouts]);
+    }
+    verifyCurrentTraining();
+  }
+
+  async function verifyCurrentTraining() {
     setLoading(true);
     const training = await getCurrentTraining();
     if (training && training.length > 0) {
@@ -65,8 +77,6 @@ export const StartWorkoutContainer = ({ customClass, setUpdate }) => {
     } else {
       setCurrentTrainig({});
     }
-    const myWorks = await getUserWorkoutsList();
-    setWorkoutsArray([...myWorks]);
     setLoading(false);
   }
 
@@ -105,8 +115,8 @@ export const StartWorkoutContainer = ({ customClass, setUpdate }) => {
     };
     const response = await startTraining(info);
     setLoading(false);
-    getWorkoutsList();
     setUpdate();
+    verifyCurrentTraining();
     return response;
   }
 
@@ -199,6 +209,13 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
     }
     training.end = end;
     training.minutes = minutes;
+
+    if (training.calories == "") training.calories = 0;
+    if (training.kg == "") training.kg = 0;
+    if (training.km == "") training.calokmries = 0;
+    if (training.minutes == "") training.minutes = 0;
+    if (training.steps == "") training.steps = 0;
+
     msj(training);
     const response = await endTraining(training);
     setLoading(false);
@@ -244,9 +261,9 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
                     value = parseInt(value);
                   } catch (e) {
                     msj(e);
-                    value = 0;
+                    value = "";
                   }
-                  if (!value) value = 0;
+                  if (!value) value = "";
                   updateOneValue("calories", value);
                 }}
                 value={training.calories}
@@ -269,9 +286,9 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
                     value = parseFloat(value);
                   } catch (e) {
                     msj(e);
-                    value = 0;
+                    value = "";
                   }
-                  if (!value) value = 0;
+                  if (!value) value = "";
                   updateOneValue("kg", value);
                 }}
                 value={training.kg}
@@ -294,39 +311,12 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
                     value = parseFloat(value);
                   } catch (e) {
                     msj(e);
-                    value = 0;
+                    value = "";
                   }
-                  if (!value) value = 0;
+                  if (!value) value = "";
                   updateOneValue("km", value);
                 }}
                 value={training.km}
-              />
-            </Form.Group>
-          </Form.Group>
-        </Col>
-        <Col sm>
-          <Form.Group>
-            <Form.Group>
-              <Form.Label>
-                {getStr("minutes", 1)}{" "}
-                <small>{getStr("minutesCalculate", 1)}</small>
-              </Form.Label>
-              <Form.Control
-                placeholder={getStr("minutes", 1)}
-                className="alphaContainerLigth"
-                type="number"
-                onChange={(e) => {
-                  var value = e.target.value;
-                  try {
-                    value = parseInt(value);
-                  } catch (e) {
-                    msj(e);
-                    value = 0;
-                  }
-                  if (!value) value = 0;
-                  updateOneValue("minutes", value);
-                }}
-                value={training.minutes}
               />
             </Form.Group>
           </Form.Group>
@@ -345,13 +335,41 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
                     value = parseInt(value);
                   } catch (e) {
                     msj(e);
-                    value = 0;
+                    value = "";
                   }
-                  if (!value) value = 0;
+                  if (!value) value = "";
                   updateOneValue("steps", value);
                 }}
                 value={training.steps}
               />
+            </Form.Group>
+          </Form.Group>
+        </Col>
+        <Col sm>
+          <Form.Group>
+            <Form.Group>
+              <Form.Label>{getStr("minutes", 1)} </Form.Label>
+              <Form.Control
+                placeholder={getStr("minutes", 1)}
+                className="alphaContainerLigth"
+                type="number"
+                onChange={(e) => {
+                  var value = e.target.value;
+                  try {
+                    value = parseInt(value);
+                  } catch (e) {
+                    msj(e);
+                    value = "";
+                  }
+                  if (!value) value = "";
+                  updateOneValue("minutes", value);
+                }}
+                value={training.minutes}
+              />
+
+              <Form.Label>
+                <small>{getStr("minutesCalculate", 1)}</small>
+              </Form.Label>
             </Form.Group>
           </Form.Group>
         </Col>
@@ -486,16 +504,24 @@ export const SeriesOfExercice = ({ series, update }) => {
   ));
 };
 
-export const WorkoutContainer = ({ customClass, update }) => {
+export const WorkoutContainer = ({ customClass, update, workouts }) => {
   const [workoutsArray, setWorkoutsArray] = useState([]);
 
   useEffect(() => {
     getWorkoutsList();
-  }, [setWorkoutsArray, update]);
+  }, [setWorkoutsArray, workouts]);
 
   async function getWorkoutsList() {
-    const myWorks = await getUserWorkoutsList();
-    setWorkoutsArray([...myWorks]);
+    if (!workouts) {
+      const myWorks = await getUserWorkoutsList();
+      setWorkoutsArray([...myWorks]);
+    } else {
+      setWorkoutsArray([...workouts]);
+    }
+  }
+
+  function setUpdate() {
+    update();
   }
 
   return (
@@ -503,12 +529,12 @@ export const WorkoutContainer = ({ customClass, update }) => {
       <Row className={customClass}>
         <Col>{getStr("myWorkouts", 1)}</Col>
       </Row>
-      <NewWorkoutForm customClass={"p-2"} getWorkoutsList={getWorkoutsList} />
+      <NewWorkoutForm customClass={"p-2"} getWorkoutsList={setUpdate} />
       <hr />
       <ListOfWorkoutsWidget
         workouts={workoutsArray}
         customClass={"mt-3 mb-2"}
-        getWorkoutsList={getWorkoutsList}
+        getWorkoutsList={setUpdate}
       />
     </Container>
   );
