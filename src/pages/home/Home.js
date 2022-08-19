@@ -1,7 +1,7 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { Helmet, HelmetData } from "react-helmet-async";
 import { getStr } from "../../lang/lang-fun";
-import { SubTitle, Text } from "./home-ele";
+import { SelectLanguage, SubTitle, Text } from "./home-ele";
 import f01 from "../../img/f01.jpg";
 import { useEffect, useState } from "react";
 import { useWindowSize } from "../../config/general-fun";
@@ -12,6 +12,7 @@ import {
   WorkoutContainer
 } from "../workouts/workout-ele";
 import { ReportsContainer } from "../reports/reports-ele";
+import { getUserWorkoutsList } from "../workouts/workout-fun";
 
 const helmetData = new HelmetData({});
 function Home() {
@@ -19,6 +20,9 @@ function Home() {
   const [small, setSmall] = useState(width < 400 ? true : false);
   const { user, isLogged } = useAuth();
   const [update, setUpdate] = useState(false);
+  // eslint-disable-next-line no-unused-vars
+  const [loading, setLoading] = useState(false);
+  const [workouts, setWorkouts] = useState([]);
 
   function newUpdate() {
     setUpdate(!update);
@@ -32,7 +36,16 @@ function Home() {
     }
   }, [width]);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    getWorkouts();
+  }, [update]);
+
+  async function getWorkouts() {
+    setLoading(true);
+    const myWorks = await getUserWorkoutsList();
+    setWorkouts([...myWorks]);
+    setLoading(false);
+  }
 
   return (
     <Container className={small ? "p-1 text-center" : "p-2 pt-5"} fluid>
@@ -54,6 +67,9 @@ function Home() {
           <Col>
             <SubTitle>{getStr("appName", 2)}</SubTitle>
             <Text>{getStr("slogan", 1)}! </Text>
+          </Col>
+          <Col className="ps-0 pe-0" style={{ maxWidth: "50px" }}>
+            <SelectLanguage />
           </Col>
         </Row>
         <hr />
@@ -77,21 +93,21 @@ function Home() {
               "text-start alphaContainerDark p-3 mt-2" + (small ? " " : "")
             }
           >
-            <StartWorkoutContainer setUpdate={newUpdate} />
+            <StartWorkoutContainer setUpdate={newUpdate} workouts={workouts} />
           </Container>
           <Container
             className={
               "text-start alphaContainerDark p-3 mt-2" + (small ? " " : "")
             }
           >
-            <WorkoutContainer update={update} />
+            <WorkoutContainer update={newUpdate} workouts={workouts} />
           </Container>
           <Container
             className={
               "text-start alphaContainerDark p-3 mt-2" + (small ? " " : "")
             }
           >
-            <ReportsContainer update={update} />
+            <ReportsContainer update={newUpdate} />
           </Container>
         </>
       ) : null}
