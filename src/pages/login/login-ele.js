@@ -1,8 +1,10 @@
 import { useRef, useState } from "react";
 import { Form, Container, Row, Col, Button } from "react-bootstrap";
-import { GeneralSpinner, msj } from "../../config/general-fun";
+import { GeneralSpinner } from "../../config/general-fun";
 import { getStr } from "../../lang/lang-fun";
 import { logIn, registerUser, logOut } from "./login-fun";
+import { ReactComponent as LogoutIcon } from "../../includes/icons/logout.svg";
+
 export const LoginForm = ({ customClass }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
@@ -28,7 +30,17 @@ export const LoginForm = ({ customClass }) => {
   async function submitForm(event) {
     event.preventDefault();
     event.stopPropagation();
+    if (typeClick == 2) {
+      setError(false);
+      setTypeClick(1);
+      return false;
+    }
     if (typeClick == 1) return sumbitSingUp(event);
+    if (typeClick == -1) {
+      setError(false);
+      setTypeClick(0);
+      return false;
+    }
     return sumbitLogIn(event);
   }
 
@@ -67,7 +79,6 @@ export const LoginForm = ({ customClass }) => {
     event.preventDefault();
     event.stopPropagation();
     const form = event.currentTarget;
-    msj(form);
     if (form.checkValidity() === false) {
       setValidated(false);
     } else {
@@ -106,12 +117,14 @@ export const LoginForm = ({ customClass }) => {
         ref={formRef}
         noValidate
         validated={validated}
-        onSubmit={submitForm}
-        className=""
+        onSubmit={(e) => {
+          submitForm(e);
+        }}
+        className="loginForm"
       >
         <Container>
           <Row>
-            <Col className="mt-3">
+            <Col className="mt-1" sm>
               <Form.Group controlId="email">
                 {email.length > 0 ? (
                   <Form.Label>{getStr("email", 1)}</Form.Label>
@@ -125,9 +138,7 @@ export const LoginForm = ({ customClass }) => {
                 />
               </Form.Group>
             </Col>
-          </Row>
-          <Row>
-            <Col className="mt-4">
+            <Col className="mt-1" sm>
               <Form.Group controlId="pass">
                 {pass.length > 0 ? (
                   <Form.Label>{getStr("pass", 1)}</Form.Label>
@@ -142,7 +153,7 @@ export const LoginForm = ({ customClass }) => {
               </Form.Group>
             </Col>
             {typeClick == 1 ? (
-              <Col className="mt-4">
+              <Col className="mt-1" sm>
                 <Form.Group controlId="pass2">
                   {pass.length > 0 ? (
                     <Form.Label>{getStr("repeatPass", 1)}</Form.Label>
@@ -164,10 +175,10 @@ export const LoginForm = ({ customClass }) => {
             </Row>
           ) : null}
           <Row>
-            {typeClick == 0 ? (
+            {typeClick == 0 || typeClick == -1 ? (
               <Col
                 className={
-                  "pb-0 mb-0 d-grid gap-2 " + (error ? "mt-1" : "mt-4")
+                  "pb-0 mb-0 d-grid gap-2 " + (error ? "mt-1" : "mt-1")
                 }
               >
                 <Button
@@ -182,41 +193,47 @@ export const LoginForm = ({ customClass }) => {
                   {loading ? <GeneralSpinner /> : getStr("login", 1)}
                 </Button>
               </Col>
-            ) : (
+            ) : null}
+          </Row>
+          <Row>
+            {typeClick == 1 ? (
               <Col
                 sm={1}
                 className={
                   "pb-0 mb-0 d-grid gap-2 " +
-                  (error ? "mt-1 me-0" : "mt-4 me-0")
+                  (error ? "mt-1 me-0" : "mt-1 me-0")
                 }
               >
                 <Button
                   className="pt-2 pb-2 mt-2 "
                   variant="secondary"
                   onClick={() => {
-                    setTypeClick(0);
+                    setTypeClick(-1);
                   }}
-                  type="button"
+                  type="submit"
                 >
                   {"<"}
                 </Button>
               </Col>
-            )}
-
+            ) : null}
             <Col
               className={
-                "pb-0 ps-0 mb-0 d-grid gap-2 " + (error ? "mt-1" : "mt-4")
+                "pb-0 mb-0 d-grid gap-2 ps-1 " +
+                (error ? "mt-1" : "mt-1") +
+                (typeClick == 1 ? "" : " ms-2")
               }
+              sm={3}
             >
               <Button
                 className="pt-2 pb-2 mt-2"
                 variant={
-                  typeClick == 1 ? (error ? "danger" : "success") : "info"
+                  typeClick == 1 ? (error ? "danger" : "success") : "light"
                 }
                 onClick={() => {
-                  setTypeClick(1);
+                  if (typeClick == 0) setTypeClick(2);
+                  if (typeClick == 1) setTypeClick(1);
                 }}
-                type={typeClick == 0 ? "button" : "submit"}
+                type={"submit"}
                 disabled={loading}
               >
                 {loading ? <GeneralSpinner /> : getStr("singUp", 1)}
@@ -230,15 +247,31 @@ export const LoginForm = ({ customClass }) => {
 };
 
 export const LogOutButton = () => {
+  const [back, setBack] = useState("#414141");
   return (
     <Button
-      variant="dark"
+      variant="transparent p-0 m-0"
       size="sm"
-      onClick={() => {
-        logOut();
-      }}
+      className="transparentButton"
+      style={{ boxShadow: "0px 0px 0px rgba(0, 0, 0, 0.0)" }}
     >
-      {getStr("logout", 1)}
+      <LogoutIcon
+        fill={back}
+        style={{
+          transition: "1s",
+          width: "20px",
+          height: "20px"
+        }}
+        onMouseOver={() => {
+          setBack("#666666");
+        }}
+        onMouseOut={() => {
+          setBack("#414141");
+        }}
+        onClick={() => {
+          logOut();
+        }}
+      />
     </Button>
   );
 };

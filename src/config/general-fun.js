@@ -1,5 +1,24 @@
 import { useEffect, useLayoutEffect, useState } from "react";
 import { Spinner, Row, Col } from "react-bootstrap";
+import { ReactComponent as PlayIconIm } from "../includes/icons/play.svg";
+import { ReactComponent as DownIconIm } from "../includes/icons/down.svg";
+import { ReactComponent as TrashIconIm } from "../includes/icons/trash.svg";
+import { ReactComponent as DropIconIm } from "../includes/icons/drop.svg";
+export const PlayIcon = PlayIconIm;
+export const DownIcon = DownIconIm;
+export const TrashIcon = TrashIconIm;
+export const DropIcon = DropIconIm;
+
+export const redColor = "#FF2100";
+export const redColorDark = "#b31700";
+export const blueColor = "#05ABFF";
+export const blueColorDark = "#0377b2";
+export const orangeColor = "#FF8600";
+export const orangeColorDark = "#b25d00";
+export const greenColor = "#2BD90A";
+export const greenColorDark = "#198206";
+export const yellowColor = "#9C9517";
+export const yellowColorDark = "#6D6810";
 
 export const formatedNumber = (number, decimals = 2) => {
   if (!number) return 0;
@@ -31,7 +50,7 @@ export async function delay(seconds) {
 }
 
 export function useWindowSize() {
-  const [size, setSize] = useState([0, 0]);
+  const [size, setSize] = useState([window.innerWidth, window.innerHeight]);
   useLayoutEffect(() => {
     function updateSize() {
       setSize([window.innerWidth, window.innerHeight]);
@@ -100,7 +119,8 @@ export const GeneralInformation = ({
 export function getYouTubeId(url) {
   const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
   const match = url.match(regExp);
-  return match && match[2].length === 11 ? match[2] : undefined;
+  const response = match && match[2].length === 11 ? match[2] : undefined;
+  return response;
 }
 
 export function dateToInputString(date) {

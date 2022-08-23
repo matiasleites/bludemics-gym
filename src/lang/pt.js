@@ -90,12 +90,14 @@ const ptJSON = {
   totals: "totais",
   percentual: "percentual",
   average: "média",
-  minutesCalculate: "(zero para auto-calcular)",
+  minutesCalculate: "zero auto",
   stepsByWorkout: "passos del treino",
   exampleWorkoutName: "treino de exemplo",
   squats: "agachamentos",
   pushups: "flexões",
-  crunches: "abdominais"
+  crunches: "abdominais",
+  minutesByWorkout: "minutos por treino",
+  manageWorkouts: "gerenciar treinos"
 };
 
 export const pt = (str) => {

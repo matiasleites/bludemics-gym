@@ -7,11 +7,12 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Open Sans", serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: rgba(0, 0, 0, 0);
-  background-image: linear-gradient(315deg, #a12626, #550bec);
+  background-color: #e0e0e0;
+  background-image: linear-gradient(315deg, #e0e0e0, #d3d3d3);
   min-height: 100vh;
   overscroll-behavior: none;
   overflow: overlay;
+  font-family: "OpenSans", serif;
 }
 
 @import url("https://fonts.googleapis.com/css2?family=Anek+Gujarati&family=Explora&family=Lora&family=Open+Sans&family=Roboto:wght@400;700&display=swap");
@@ -35,196 +36,303 @@ code {
     monospace;
 }
 
+small {
+  font-size: clamp(5pt, 2vw, 8pt) !important;
+  transition: 1s !important;
+}
+
+input {
+  border-radius: 20px !important;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1) !important;
+  transition: 1s !important;
+}
+
+textarea {
+  border-radius: 20px !important;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1) !important;
+}
+
+label {
+  transition: 1s !important;
+  font-size: clamp(8pt, 2vw, 10pt) !important;
+  margin: 0px !important;
+  padding-left: 5px;
+}
+
+button {
+  border-radius: 20px !important;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2) !important;
+  transition: 0.6s !important;
+}
+
+select {
+  border-radius: 10px !important;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2) !important;
+}
+
+option {
+  border-radius: 10px !important;
+}
+
+.icon {
+  transition: 1s !important;
+}
+
+.icon:hover {
+  cursor: pointer !important;
+}
+
+.transparentButton {
+  box-shadow: 0px 0px 0px rgba(0, 0, 0, 0) !important;
+}
+
+.back {
+  transition: 2s !important;
+}
+
 .title {
-  font-family: "Roboto", serif;
-  font-size: clamp(18px, 10vw, 32px);
+  font-size: clamp(15px, 8vw, 32px);
 }
 
 .subTitle {
-  font-family: "Roboto", serif;
   font-size: clamp(12px, 5vw, 20px);
 }
 
 .text {
-  font-family: "Open Sans", serif;
   font-size: clamp(10px, 4vw, 18px);
 }
 
-.gradient-01 {
-  background-image: linear-gradient(
-    315deg,
-    rgba(161, 38, 38, 0.4),
-    rgba(85, 11, 236, 0.4)
-  );
-}
-
-.gradient-02 {
-  background-image: linear-gradient(
-    315deg,
-    rgba(85, 11, 236, 0.4),
-    rgba(161, 38, 38, 0.4)
-  );
-}
-
-.back-01 {
-  background-color: rgba(85, 11, 236, 0.2);
-}
-
-.back-02 {
-  background-color: rgba(161, 38, 38, 0.2);
-}
-
-.back-03 {
-  background-color: rgba(85, 11, 236, 0.4);
-}
-
-.backGeneric {
-  min-height: 100vh;
-}
-
-.alphaContainerLigth {
+.fullContainer {
   max-width: 700px !important;
-  background-color: rgba(255, 255, 255, 0.7);
-  color: black;
-  border-radius: 12px;
 }
 
-.alphaContainerDark {
-  max-width: 700px !important;
-  background-color: rgba(0, 0, 0, 0.7);
-  color: white;
-  border-radius: 10px !important;
-  font-size: clamp(10px, 4vw, 18px);
-  box-shadow: 5px 5px 5px 0px rgba(0, 0, 0, 0.4);
+.daysCell {
+  margin: auto;
+  position: relative;
+  color: #282828;
+  font-weight: 600;
+  font-size: clamp(8pt, 3vw, 13pt) !important;
+  width: 100%;
+  min-width: 68px;
+  min-height: 85px;
+  max-width: 75px;
+  border-radius: 25%;
+  background-color: #efefef;
+  text-align: center;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
 }
 
-.alphaContainerDark input {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-  border: none !important;
-  border-bottom: 1.5px solid #fff !important;
-  background-color: rgba(0, 0, 0, 0);
-  outline: none !important;
-  color: #a0d18c;
+.daysCell .center {
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.daysCell p {
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.have {
+  color: #2bd90a;
+}
+
+.loginForm {
+  position: relative;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 20px;
+  background-color: #efefef;
+  transition: 1s;
+  padding: 20px;
+}
+
+.workoutButtonCell {
+  position: relative;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 40px;
+  background-color: #efefef;
+  min-height: 80px;
+  font-weight: 600;
+  font-size: clamp(10pt, 3vw, 13pt) !important;
+  transition: 1s;
+}
+
+.workoutButtonCell .center {
+  width: 100%;
+  cursor: pointer;
+  margin: 0;
+  padding-left: 20px;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.workoutButtonCell .icon {
+  transition: 0.4s;
+}
+
+.workoutButtonCell .countdown {
+  font-size: clamp(10pt, 4vw, 15pt) !important;
+}
+
+.extraShadow {
+  box-shadow: 4px 4px 7px rgba(0, 0, 0, 0.3);
+}
+
+.openWorkoutCell {
+  position: relative;
+  margin-top: 10px;
+  margin-bottom: 20px;
+  padding: 10px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 40px;
+  background-color: #efefef;
+  min-height: 80px;
+  font-weight: 600;
+  font-size: clamp(10pt, 3vw, 13pt) !important;
+  transition: 1s;
+}
+
+.openWorkoutCell .exerciceCell {
+  position: relative;
+  margin-top: 10px;
+  padding: 10px;
+  box-shadow: 2px 2px 7px rgba(0, 0, 0, 0.2);
+  border-radius: 33px;
+  background-color: #f6f6f6;
+  min-height: 66px;
+  height: auto;
+  font-weight: 600;
+  font-size: clamp(10pt, 3vw, 13pt) !important;
+  transition: 1s;
+}
+
+.openWorkoutCell .center {
+  width: 90%;
+  cursor: pointer;
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  -ms-transform: translateY(-50%);
+  transform: translateY(-50%);
+}
+
+.manageWorkoutsCell {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding-left: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  background-color: #efefef;
+  min-height: 80px;
+  font-weight: 600;
+  font-size: clamp(10pt, 3vw, 13pt) !important;
+  transition: 1s;
 }
 
-.alphaContainerDark input:active {
-  outline: none !important;
-  border: none !important;
-  border-bottom: 1.5px solid #fff !important;
-  color: #2d9fd9;
-  box-shadow: 0 0 0px #719ece;
+.manageWorkoutsCell .title {
+  min-height: 90px;
+  background-color: #282828;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  padding: 10px;
+  color: #ffffff;
 }
 
-.alphaContainerDark input:focus {
-  outline: none !important;
-  background-color: rgba(0, 0, 0, 0);
-  border: none !important;
-  border-bottom: 2px solid #fff !important;
-  color: #2d9fd9;
-  box-shadow: 0 0 0px #719ece;
+.manageWorkoutsCell .training {
+  background-color: #f6f6f6;
+  border-radius: 25px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
 }
 
-.alphaContainerDark input:disabled {
-  outline: none !important;
-  background-color: rgba(0, 0, 0, 0);
-  border: none !important;
-  border-bottom: 2px solid #fff !important;
-  color: #2d9fd9;
-  box-shadow: 0 0 0px #719ece;
+.manageWorkoutsCell .training .exercice {
+  background-color: #fefefe;
+  border-radius: 25px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+  font-size: clamp(8pt, 2vw, 10pt) !important;
 }
 
-.alphaContainerDark input:read-only {
-  outline: none !important;
-  background-color: rgba(0, 0, 0, 0);
-  border: none !important;
-  border-bottom: 2px solid #fff !important;
-  color: #a0d18c;
-  box-shadow: 0 0 0px #719ece;
-}
-
-::-webkit-calendar-picker-indicator {
-  filter: invert(1);
-}
-
-.alphaContainerDark textarea {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-  border: none !important;
-  border-bottom: 1.5px solid #fff !important;
-  outline: none !important;
-  background-color: rgba(0, 0, 0, 0);
-  color: #a0d18c;
+.staticsCell {
+  position: relative;
+  margin-top: 20px;
+  margin-bottom: 20px;
   padding-left: 10px;
+  padding-bottom: 10px;
+  padding-right: 10px;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  background-color: #efefef;
+  min-height: 80px;
+  font-weight: 600;
+  font-size: clamp(10pt, 3vw, 13pt) !important;
+  transition: 1s !important;
 }
 
-.alphaContainerDark textarea:active {
-  outline: none !important;
-  border: none !important;
-  border-bottom: 1.5px solid #fff !important;
-  color: #2d9fd9;
-  box-shadow: 0 0 0px #719ece;
+.staticsCell .title {
+  min-height: 90px;
+  background-color: #282828;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  padding: 10px;
+  color: #ffffff;
+  transition: 1s !important;
 }
 
-.alphaContainerDark textarea:focus {
-  outline: none !important;
-  border: none !important;
-  box-shadow: 0 0 0px #719ece;
-  border-bottom: 2px solid #fff !important;
-  color: #2d9fd9;
-  background-color: rgba(0, 0, 0, 0);
+.staticsCell .window {
+  background-color: #f6f6f6;
+  border-radius: 25px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+  transition: 1s !important;
 }
 
-.alphaContainerDark label {
-  color: rgba(255, 255, 255, 0.6);
-  font-size: clamp(10px, 5vw, 12px);
-  margin: 0%;
-  padding: 0%;
+.staticsCell .window .line {
+  background-color: #fefefe;
+  border-radius: 25px;
+  padding-left: 15px;
+  padding-right: 15px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  margin-top: 10px;
+  box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.2);
+  font-size: clamp(8pt, 2vw, 10pt) !important;
+  transition: 1s !important;
 }
 
-.alphaContainerDark select {
-  -webkit-border-radius: 0px;
-  -moz-border-radius: 0px;
-  border-radius: 0px;
-  border: none !important;
-  border-bottom: 1.5px solid #fff !important;
-  outline: none !important;
-  color: #fff;
-  background-color: rgba(255, 255, 255, 0) !important;
+.staticsCell .window .texts {
+  font-size: clamp(8pt, 2vw, 10pt) !important;
 }
 
-.alphaContainerDark option {
-  outline: none !important;
-  border: none !important;
-  color: #fff;
-  background: #24043f !important;
-}
+@media screen and (max-width: 500px) {
+  .daysCell {
+    min-height: 50px;
+    max-width: 50px;
+    min-width: 22px;
+  }
 
-.alphaContainerDark select:focus {
-  outline: none !important;
-  border: none !important;
-  box-shadow: 0 0 0px #719ece;
-  border-bottom: 2px solid #fff !important;
-  color: #2d9fd9;
-  background-color: rgba(255, 255, 255, 0) !important;
-}
-
-input:-webkit-autofill {
-  color: #fff !important;
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: white !important;
-}
-
-.alphaContainerDark button {
-  -webkit-border-radius: 6px;
-  -moz-border-radius: 6px;
-  border-radius: 6px;
-}
-
-.noRounded {
-  border-radius: 0% !important;
+  .workoutButtonCell {
+    min-height: 50px;
+    border-radius: 25px;
+  }
 }
