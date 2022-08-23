@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Form } from "react-bootstrap";
+import Select from "react-select";
 import { getLang } from "../../lang/lang-fun";
 
 export const Title = ({ children }) => {
@@ -15,28 +15,46 @@ export const Text = ({ children }) => {
 };
 
 export const SelectLanguage = () => {
-  const [lang, setLang] = useState(getLang());
+  const [lang, setLang] = useState({ value: getLang(), label: getLang() });
+
+  const options = [
+    { value: "es", label: "es" },
+    { value: "en", label: "en" },
+    { value: "pt", label: "pt" }
+  ];
+
+  const customStyles = {
+    control: (styles) => ({
+      ...styles,
+      borderRadius: "18px",
+      backgroundColor: "rgba(0,0,0,0)",
+      border: "none"
+    }),
+    option: (styles) => ({
+      ...styles,
+      borderRadius: "0px"
+    })
+  };
 
   function dropLang(e) {
-    const newLang = e.target.value;
-    localStorage.setItem("lang", newLang);
-    setLang(newLang);
+    setLang(e);
+    localStorage.setItem("lang", e.value);
+
+    setLang(e);
     window.location.reload();
   }
 
   return (
-    <Form.Group style={{ maxWidth: "30px" }}>
-      <Form.Control
-        className="p-0 ps-1"
-        value={lang}
-        as="select"
-        onChange={dropLang}
-        onSelect={dropLang}
-      >
-        <option value="en">en</option>
-        <option value="es">es</option>
-        <option value="pt">pt</option>
-      </Form.Control>
-    </Form.Group>
+    <Select
+      className="p-0 ps-1"
+      value={lang}
+      options={options}
+      onChange={dropLang}
+      styles={customStyles}
+      components={{
+        DropdownIndicator: () => null,
+        IndicatorSeparator: () => null
+      }}
+    />
   );
 };

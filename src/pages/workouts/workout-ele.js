@@ -1,18 +1,33 @@
+/* eslint-disable jsx-a11y/no-static-element-interactions */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
 import { useEffect, useRef, useState } from "react";
 import { Container, Col, Row, Button, Form } from "react-bootstrap";
 import YouTube from "react-youtube";
 import { firestoreNow } from "../../config/firebase";
+// eslint-disable-next-line no-unused-vars
+import mwb001 from "../../includes/components/myWorkouts001.jpg";
+import mwb002 from "../../includes/components/myWorkouts002.jpg";
 import {
   blockButton,
+  blueColor,
   delay,
+  DownIcon,
+  DropIcon,
   GeneralInformation,
   GeneralSpinner,
   getDayOfFirebaseDate,
   getVideoSize,
   getYouTubeId,
+  greenColor,
   minutesBetweenTwoDates,
   msj,
-  useWindowSize
+  orangeColor,
+  PlayIcon,
+  redColor,
+  redColorDark,
+  TrashIcon,
+  useWindowSize,
+  yellowColor
 } from "../../config/general-fun";
 import { getStr } from "../../lang/lang-fun";
 import {
@@ -21,7 +36,6 @@ import {
   endTraining,
   getCurrentTraining,
   getUserWorkoutsList,
-  getWorkout,
   startTraining,
   traninigElapsedTime,
   updateTraining,
@@ -43,15 +57,10 @@ export const TimerTraining = ({ workout }) => {
 };
 
 export const StartWorkoutContainer = ({ customClass, setUpdate, workouts }) => {
-  const [workoutType, setWorkoutType] = useState("");
+  // eslint-disable-next-line no-unused-vars
   const [loading, setLoading] = useState(false);
   const [workoutsArray, setWorkoutsArray] = useState([]);
   const [currentTraining, setCurrentTrainig] = useState({});
-
-  const dropType = (e) => {
-    var id = e.target.value;
-    setWorkoutType(id);
-  };
 
   useEffect(() => {
     getWorkoutsList();
@@ -73,6 +82,7 @@ export const StartWorkoutContainer = ({ customClass, setUpdate, workouts }) => {
     setLoading(true);
     const training = await getCurrentTraining();
     if (training && training.length > 0) {
+      msj(training[0]);
       setCurrentTrainig({ ...training[0] });
     } else {
       setCurrentTrainig({});
@@ -80,28 +90,26 @@ export const StartWorkoutContainer = ({ customClass, setUpdate, workouts }) => {
     setLoading(false);
   }
 
-  async function startMyTraining() {
+  // eslint-disable-next-line no-unused-vars
+  async function startMyTraining(myWorkout) {
     setLoading(true);
-    const type = workoutType;
     var exercices = [];
     var name = getStr("free", 1);
 
-    if (type.length > 0) {
-      const myWorkout = await getWorkout(type);
-      name = myWorkout.name;
-      exercices = myWorkout.exercices;
-      exercices = exercices.map(function (value) {
-        value.status = 0;
-        const myArray = [];
-        for (let i = 0; i < value.series; i++) {
-          myArray.push({ status: 0 });
-        }
-        value.series = myArray;
-        return value;
-      });
-    }
+    name = myWorkout.name;
+    exercices = myWorkout.exercices;
+    exercices = exercices.map(function (value) {
+      value.status = 0;
+      const myArray = [];
+      for (let i = 0; i < value.series; i++) {
+        myArray.push({ status: 0 });
+      }
+      value.series = myArray;
+      return value;
+    });
+
     const info = {
-      type,
+      type: myWorkout.id,
       open: firestoreNow(),
       exercices,
       name,
@@ -111,7 +119,8 @@ export const StartWorkoutContainer = ({ customClass, setUpdate, workouts }) => {
       minutes: 0,
       end: false,
       steps: 0,
-      info: ""
+      info: "",
+      color: myWorkout.color
     };
     const response = await startTraining(info);
     setLoading(false);
@@ -121,60 +130,129 @@ export const StartWorkoutContainer = ({ customClass, setUpdate, workouts }) => {
   }
 
   return (
-    <Container className={customClass}>
+    <Container className={"fullContainer " + customClass}>
       {currentTraining && currentTraining.open ? (
         <OpenTrainigContainer
           training={currentTraining}
           setUpdate={getWorkoutsList}
+          generalUpdate={setUpdate}
         />
       ) : (
-        <>
-          <Row className="mb-2">
-            <Col>{getStr("workouts", 1)}</Col>
-          </Row>
-          <Row>
-            <Col className="pt-2 pb-2" sm>
-              <Form.Group>
-                <Form.Control
-                  value={workoutType}
-                  as="select"
-                  onChange={dropType}
-                  onSelect={dropType}
-                >
-                  <option id={""} value={""}>
-                    {getStr("free", 1)}
-                  </option>
-                  {Object.entries(workoutsArray).map(([k, work]) => (
-                    <option
-                      id={work.id}
-                      key={"wSelect" + k + work.id}
-                      value={work.id}
-                    >
-                      {work.name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-            </Col>
-            <Col className="pt-2 pb-2 d-grid gap-2" sm>
-              <Button
-                variant="success"
-                disabled={loading}
-                onClick={() => {
-                  startMyTraining();
-                }}
-              >
-                {loading ? <GeneralSpinner /> : getStr("startWorkout", 1)}
-              </Button>
-            </Col>
-          </Row>
-        </>
+        <Row xs={1} md={2} className="p-0">
+          {Object.entries(workoutsArray).map(([k, work]) => (
+            <ButtonOneWorkout
+              key={"wSelect" + k + work.id}
+              workout={work}
+              loading={loading}
+              setLoading={setLoading}
+              start={startMyTraining}
+            />
+          ))}
+        </Row>
       )}
     </Container>
   );
 };
 
-export const OpenTrainigContainer = ({ training, setUpdate }) => {
+export const ButtonOneWorkout = ({ workout, loading, setLoading, start }) => {
+  if (!workout.color) workout.color = blueColor;
+  const [hover, setHover] = useState(false);
+  const [time, setTime] = useState(-1);
+  const [iconW, setIconW] = useState("25px");
+
+  function manageClick() {
+    if (time < 0 && !loading) {
+      setTime(3);
+      setLoading(true);
+    } else {
+      setLoading(false);
+      setTime(-1);
+    }
+  }
+
+  useEffect(() => {
+    if (time == 0) {
+      start(workout);
+    }
+  }, [time]);
+
+  function updateHover(enter) {
+    if (enter) {
+      setHover(true);
+      setIconW("30px");
+    } else {
+      setHover(false);
+      setIconW("25px");
+    }
+  }
+
+  return (
+    <Col className="p-1 pt-2 m-0">
+      <div
+        onClick={() => {
+          manageClick();
+        }}
+        className={"workoutButtonCell " + (hover ? "extraShadow" : "")}
+        style={{ cursor: hover && !loading ? "pointer" : "default" }}
+        onMouseEnter={() => {
+          updateHover(true);
+        }}
+        onMouseLeave={() => {
+          updateHover(false);
+        }}
+      >
+        <div className={"center row"} style={{ color: workout.color }}>
+          <Col className="text-start">{workout.name}</Col>
+          <Col className="text-end">
+            {time >= 0 ? (
+              <TimerSeconds setTime={setTime} />
+            ) : (
+              <PlayIcon
+                className="icon"
+                fill={workout.color}
+                style={{
+                  width: iconW,
+                  height: iconW
+                }}
+              />
+            )}
+          </Col>
+        </div>
+      </div>
+    </Col>
+  );
+};
+
+export const TimerSeconds = ({ initialSeconds, setTime }) => {
+  if (!initialSeconds) initialSeconds = 3;
+  const [seconds, setSeconds] = useState(initialSeconds);
+  useEffect(() => {
+    let myInterval = setInterval(() => {
+      if (seconds > 0) {
+        setSeconds(seconds - 1);
+        setTime(seconds - 1);
+      } else {
+        clearInterval(myInterval);
+      }
+    }, 500);
+    return () => {
+      clearInterval(myInterval);
+    };
+  });
+
+  return (
+    <div className="countdown" style={{ paddingRight: "10px" }}>
+      {seconds}
+    </div>
+  );
+};
+
+export const OpenTrainigContainer = ({
+  training,
+  setUpdate,
+  generalUpdate
+}) => {
+  if (!training.color) training.color = blueColor;
   const [loading, setLoading] = useState(false);
   const [acceptClose, setAcceptClose] = useState(false);
 
@@ -220,15 +298,15 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
     const response = await endTraining(training);
     setLoading(false);
     setUpdate();
+    generalUpdate();
     return response;
   }
 
   return (
-    <>
-      <Row>
-        <Col className="text-center subTitle">{training.name}</Col>
+    <div className="openWorkoutCell">
+      <Row style={{ color: training.color }}>
+        <Col className="text-center title">{training.name}</Col>
       </Row>
-      <hr />
       <Row>
         <Col className="text-center">
           <TimerTraining workout={training} />
@@ -246,7 +324,7 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
           ))}
         </Col>
       </Row>
-      <Row className="ps-2 pe-2">
+      <Row className="mt-4 ps-2 pe-2">
         <Col sm>
           <Form.Group>
             <Form.Group>
@@ -368,7 +446,7 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
               />
 
               <Form.Label>
-                <small>{getStr("minutesCalculate", 1)}</small>
+                <small className="ms-1">{getStr("minutesCalculate", 1)}</small>
               </Form.Label>
             </Form.Group>
           </Form.Group>
@@ -401,6 +479,7 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
       <Row>
         <Col className="pt-2 pb-2 d-grid gap-2" sm>
           <Button
+            className="m-3"
             variant={acceptClose ? "danger" : "warning"}
             disabled={loading}
             onClick={() => {
@@ -412,7 +491,7 @@ export const OpenTrainigContainer = ({ training, setUpdate }) => {
           </Button>
         </Col>
       </Row>
-    </>
+    </div>
   );
 };
 
@@ -436,36 +515,45 @@ export const ExerciceOfTraining = ({ exercice, pos, update }) => {
   }
 
   return (
-    <Container className=" rounded border border-secondary mt-3 mb-2 ms-0 me-0 p-2">
-      <Row className="ps-2 pe-2 mb-2">
-        <Col
-          onClick={() => {
-            setOpen(!open);
-          }}
-        >
-          {exercice.name} ({exercice.reps}) {open ? "-" : "+"}
-        </Col>
-        <SeriesOfExercice series={exercice.series} update={updateSeries} />
-      </Row>
-      {!open ? null : (
-        <>
-          <Row className="ps-2 pe-2 mb-2">
-            <Col>
-              <small>{exercice.info}</small>
-            </Col>
-          </Row>
-          <hr />
-          <Row className="mb-2">
-            <Col className="text-center">
-              <YouTube
-                videoId={getYouTubeId(exercice.video)}
-                opts={videoOptions}
-                asdf
-              />
-            </Col>
-          </Row>
-        </>
-      )}
+    <Container className="exerciceCell">
+      <Container className="m-0 p-0 pt-1 pe-1">
+        <Row className="ps-2 pe-2 mb-2">
+          <Col
+            className="text-start"
+            onClick={() => {
+              exercice.video && exercice.video.length > 4
+                ? setOpen(!open)
+                : false;
+            }}
+          >
+            {exercice.name} ({exercice.reps}){" "}
+            {exercice.video && exercice.video.length > 4
+              ? open
+                ? "-"
+                : "+"
+              : ""}
+          </Col>
+          <SeriesOfExercice series={exercice.series} update={updateSeries} />
+        </Row>
+        {!open ? null : (
+          <>
+            <Row className="ps-2 pe-2 mb-2">
+              <Col className="text-start">
+                <small>{exercice.info}</small>
+              </Col>
+            </Row>
+            <hr />
+            <Row className="mb-2">
+              <Col className="text-center">
+                <YouTube
+                  videoId={getYouTubeId(exercice.video)}
+                  opts={videoOptions}
+                />
+              </Col>
+            </Row>
+          </>
+        )}
+      </Container>
     </Container>
   );
 };
@@ -484,14 +572,10 @@ export const SeriesOfExercice = ({ series, update }) => {
   }
 
   return Object.entries(series).map(([k, serie]) => (
-    <Col
-      key={"serieExe" + k}
-      className="ps-1 pe-1"
-      style={{ maxWidth: "40px" }}
-    >
+    <Col key={"serieExe" + k} className="p-0 m-0" style={{ maxWidth: "30px" }}>
       <Button
         size="sm"
-        className=""
+        className="m-0"
         disabled={loading}
         variant={serie.status == 0 ? "danger" : "success"}
         onClick={() => {
@@ -525,9 +609,16 @@ export const WorkoutContainer = ({ customClass, update, workouts }) => {
   }
 
   return (
-    <Container className={customClass}>
-      <Row className={customClass}>
-        <Col>{getStr("myWorkouts", 1)}</Col>
+    <Container className={"fullContainer manageWorkoutsCell " + customClass}>
+      <Row
+        className={"title text-white"}
+        style={{
+          backgroundImage: `url(${mwb002})`,
+          backgroundPosition: "center",
+          backgroundSize: "cover"
+        }}
+      >
+        <Col>{getStr("manageWorkouts", 1)}</Col>
       </Row>
       <NewWorkoutForm customClass={"p-2"} getWorkoutsList={setUpdate} />
       <hr />
@@ -553,16 +644,9 @@ export const NewWorkoutForm = ({ customClass, getWorkoutsList }) => {
   }
 
   return (
-    <Row
-      className={
-        customClass + " rounded border border-secondary mt-3 mb-2 ms-1 me-1"
-      }
-    >
-      <Col className="mt-0" md>
+    <Row className={customClass + " rounded mt-3 mb-2 ms-1 me-1 pt-0"}>
+      <Col className="mt-1" md>
         <Form.Group controlId="nameWorkout">
-          {name.length > 0 ? (
-            <Form.Label>{getStr("name", 1)}</Form.Label>
-          ) : null}
           <Form.Control
             placeholder={getStr("name", 1)}
             className="alphaContainerLigth"
@@ -574,7 +658,7 @@ export const NewWorkoutForm = ({ customClass, getWorkoutsList }) => {
           />
         </Form.Group>
       </Col>
-      <Col className={blockButton() + (name.length > 0 ? "pt-4" : "pt-1")}>
+      <Col className={blockButton() + "mt-1"}>
         <Button
           variant="primary"
           disabled={loading}
@@ -628,10 +712,29 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
   const [name, setName] = useState(work.name);
   const [info, setInfo] = useState({ pos: 0, text: "" });
   const [loading, setLoading] = useState(false);
+  const [width] = useWindowSize();
 
   async function updateName() {
     work.name = name;
     setLoading(true);
+    const response = await updateWorkout(work);
+    response
+      ? setInfo({ pos: 1, text: getStr("success", 1) })
+      : setInfo({ pos: 1, text: getStr("errorUpdate", 1) });
+    setLoading(false);
+    getWorkoutsList();
+  }
+
+  async function chageColor() {
+    var newColor = blueColor;
+    if (!work.color || work.color == blueColor) newColor = greenColor;
+    if (work.color == greenColor) newColor = yellowColor;
+    if (work.color == yellowColor) newColor = orangeColor;
+    if (work.color == orangeColor) newColor = redColor;
+    if (work.color == redColor) newColor = blueColor;
+
+    setLoading(true);
+    work.color = newColor;
     const response = await updateWorkout(work);
     response
       ? setInfo({ pos: 1, text: getStr("success", 1) })
@@ -656,19 +759,54 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
   }
 
   return (
-    <Container
-      className={
-        " mt-2 rounded p-2 border back-01" +
-        (open ? " border-secondary shadow" : " border-secondary")
-      }
-    >
+    <Container className={" training"}>
       <Row>
+        {open ? (
+          <Col
+            className={width < 600 ? "text-center" : ""}
+            style={{ maxWidth: "30px" }}
+            onClick={() => {
+              chageColor();
+            }}
+          >
+            <DropIcon
+              className="icon"
+              fill={work.color ? work.color : blueColor}
+              style={{
+                width: "20px",
+                height: "20px"
+              }}
+            />
+          </Col>
+        ) : null}
+
         <Col
+          className="text-start"
+          style={{ color: work.color ? work.color : blueColor }}
           onClick={() => {
             setOpen(!open);
           }}
         >
-          {work.name} {open ? "-" : "+"}
+          {work.name}{" "}
+          {open ? (
+            <DownIcon
+              className="icon"
+              fill={"#282828"}
+              style={{
+                width: "10px",
+                height: "10px"
+              }}
+            />
+          ) : (
+            <PlayIcon
+              className="icon"
+              fill={"#282828"}
+              style={{
+                width: "6px",
+                height: "6px"
+              }}
+            />
+          )}
         </Col>
         {!open ? null : (
           <Col className="text-end">
@@ -690,7 +828,6 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
       </Row>
       {open ? (
         <>
-          <hr />
           <Row className="mt-2">
             <Col className="mt-0" md>
               <Form.Group controlId="nameWorkout">
@@ -709,14 +846,13 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
               </Form.Group>
             </Col>
             <Col
-              className={
-                blockButton() + (name.length > 0 ? "pt-4 pb-0" : "pt-1")
-              }
+              className={blockButton() + " pt-1"}
               sm={3}
+              sytle={{ maxHeight: "38px" }}
             >
               <Button
                 size="sm"
-                className={name.length > 0 ? "mt-2" : ""}
+                className={name.length > 0 && width > 600 ? "mt-4" : "mt-0"}
                 variant="primary"
                 disabled={loading}
                 onClick={() => {
@@ -754,9 +890,15 @@ export const ExercicesContainer = ({ work, updateExercices }) => {
     return await updateExercices(myArrayExercices);
   }
 
+  async function deleteExercice(index) {
+    const myArrayExercices = work.exercices;
+    myArrayExercices.splice(index, 1);
+    return await updateExercices(myArrayExercices);
+  }
+
   return (
-    <Container className="mt-3 back-02 rounded p-2">
-      <Row className="mt-3 mb-3">
+    <Container className="mt-1 back-02 rounded p-2">
+      <Row className="mt-1 mb-3">
         <Col>{getStr("exercices", 1) + ": " + work.name}</Col>
       </Row>
       <ExerciceForm addExercice={addExercice} />
@@ -769,6 +911,7 @@ export const ExercicesContainer = ({ work, updateExercices }) => {
               exercice={exercice}
               pos={k}
               editExercice={updateExercice}
+              deleteExercice={deleteExercice}
             />
           ))}
         </Col>
@@ -814,16 +957,34 @@ export const ExerciceForm = ({ addExercice }) => {
   }
 
   return (
-    <Container className="border border-secondary rounded p-2 back-01">
+    <Container className="exercice">
       <Row
         onClick={() => {
           setOpen(!open);
         }}
+        className={open ? "mb-2" : ""}
       >
         <Col>
-          <small className="ps-3">
-            {getStr("addExercice", 1)} {open ? "-" : "+"}
-          </small>
+          {getStr("addExercice", 1)}{" "}
+          {open ? (
+            <DownIcon
+              className="icon"
+              fill={"#282828"}
+              style={{
+                width: "10px",
+                height: "10px"
+              }}
+            />
+          ) : (
+            <PlayIcon
+              className="icon"
+              fill={"#282828"}
+              style={{
+                width: "6px",
+                height: "6px"
+              }}
+            />
+          )}
         </Col>
       </Row>
       {!open ? null : (
@@ -950,11 +1111,18 @@ export const ExerciceForm = ({ addExercice }) => {
   );
 };
 
-export const ExerciceLine = ({ exercice, pos, editExercice }) => {
+export const ExerciceLine = ({
+  exercice,
+  pos,
+  editExercice,
+  deleteExercice
+}) => {
   const [width] = useWindowSize();
   const [videoOptions, setVideoOptions] = useState({ width: 300, height: 200 });
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [hover, setHover] = useState(false);
+  const [deleteE, setDeleteE] = useState(false);
 
   useEffect(() => {
     const size = getVideoSize(width);
@@ -997,23 +1165,79 @@ export const ExerciceLine = ({ exercice, pos, editExercice }) => {
   }
 
   return (
-    <Container className="mt-1 border border-secondary rounded back-01 p-2">
-      <Row
-        onClick={() => {
-          setOpen(!open);
-        }}
-      >
-        <Col>
-          <small>
-            {exercice.name}
-            {open ? " -" : " +"}
-          </small>
+    <Container className="mt-1 p-2 exercice">
+      <Row>
+        <Col
+          onClick={() => {
+            setOpen(!open);
+          }}
+        >
+          {exercice.name}{" "}
+          {open ? (
+            <DownIcon
+              className="icon"
+              fill={"#282828"}
+              style={{
+                width: "10px",
+                height: "10px"
+              }}
+            />
+          ) : (
+            <PlayIcon
+              className="icon"
+              fill={"#282828"}
+              style={{
+                width: "6px",
+                height: "6px"
+              }}
+            />
+          )}
         </Col>
+        {open ? (
+          <Col
+            className="p-0"
+            style={{ maxWidth: "40px" }}
+            onMouseEnter={() => {
+              setHover(true);
+            }}
+            onMouseLeave={() => {
+              setHover(false);
+            }}
+            onClick={async () => {
+              if (!loading) {
+                if (deleteE) {
+                  setLoading(true);
+                  await deleteExercice(pos);
+                  setLoading(false);
+                  setDeleteE(false);
+                } else {
+                  setDeleteE(true);
+                }
+              }
+            }}
+          >
+            <TrashIcon
+              className="icon"
+              fill={
+                hover
+                  ? deleteE
+                    ? redColorDark
+                    : "#747474"
+                  : deleteE
+                  ? redColor
+                  : "#282828"
+              }
+              style={{
+                width: "15px",
+                height: "15px"
+              }}
+            />
+          </Col>
+        ) : null}
       </Row>
       {!open ? null : (
         <>
-          <hr />
-          <Row>
+          <Row className="mt-2">
             <Col>
               <Form.Group>
                 {exercice.name.length > 0 ? (
@@ -1142,25 +1366,37 @@ export const SimpleLineWorkout = ({ work, pos }) => {
   const [open, setOpen] = useState(false);
 
   return (
-    <Container
-      className={
-        " mt-2 rounded p-2 border back-01" +
-        (open ? " border-secondary shadow" : " border-secondary")
-      }
-    >
+    <Container className={"line"}>
       <Row
         onClick={() => {
           setOpen(!open);
         }}
       >
-        <Col>
+        <Col style={{ color: work.color ? work.color : blueColor }}>
           {pos} {work.name} <small>{getDayOfFirebaseDate(work.open)}</small>
-          {open ? " -" : " +"}
+          {open ? (
+            <DownIcon
+              className="icon"
+              fill={work.color ? work.color : blueColor}
+              style={{
+                width: "10px",
+                height: "10px"
+              }}
+            />
+          ) : (
+            <PlayIcon
+              className="icon"
+              fill={work.color ? work.color : blueColor}
+              style={{
+                width: "6px",
+                height: "6px"
+              }}
+            />
+          )}
         </Col>
       </Row>
       {open ? (
         <>
-          <hr />
           <Row className="mt-2">
             <Col className="mt-0" md>
               {getStr("name", 1)}: {work.name}
@@ -1199,15 +1435,9 @@ export const SimpleExercicesContainer = ({ work }) => {
   if (!work) return null;
 
   return work.exercices && work.exercices.length > 0 ? (
-    <Container className="mt-2 back-02 rounded p-2">
-      <Row className="mt-0 mb-3">
-        <Col>{getStr("exercices", 1)}</Col>
-      </Row>
+    <Container className="mt-2">
       {Object.entries(work.exercices).map(([k, exercice]) => (
-        <Row
-          key={"ExcerciceInfoList" + k + exercice.id}
-          className="border border-secondary pt-1 pb-1 ms-0 me-0 rounded"
-        >
+        <Row key={"ExcerciceInfoList" + k + exercice.id} className="line">
           <Col>{exercice.name}</Col>
           <SimpleSeriesOfExercice series={exercice.series} />
         </Row>

@@ -187,3 +187,20 @@ export async function addExampleWorkout() {
   });
   return await createWorkout(name, exercices);
 }
+
+export function pastDays(days) {
+  if (!days) days = 7;
+  return [...Array(days).keys()].map((index) => {
+    const date = new Date();
+    date.setDate(date.getDate() - index);
+    return date;
+  });
+}
+
+export function isSameDay(date1, date2) {
+  return (
+    date1.getDate() === date2.getDate() &&
+    date1.getMonth() === date2.getMonth() &&
+    date1.getFullYear() === date2.getFullYear()
+  );
+}
