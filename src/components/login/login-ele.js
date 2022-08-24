@@ -124,6 +124,9 @@ export const LoginForm = ({ customClass }) => {
       >
         <Container>
           <Row>
+            <Col>{getStr("freeLogin", 1)}</Col>
+          </Row>
+          <Row>
             <Col className="mt-1" sm>
               <Form.Group controlId="email">
                 {email.length > 0 ? (
@@ -219,13 +222,13 @@ export const LoginForm = ({ customClass }) => {
             <Col
               className={
                 "pb-0 mb-0 d-grid gap-2 ps-1 " +
-                (error ? "mt-1" : "mt-1") +
-                (typeClick == 1 ? "" : " ms-2")
+                (error ? "mt-1 " : "mt-1 ") +
+                (typeClick == 1 ? " ms-1 ps-2 pe-2 me-1 " : " ms-2")
               }
               sm={3}
             >
               <Button
-                className="pt-2 pb-2 mt-2"
+                className="pt-2 pb-2 mt-2 ms-0 me-2"
                 variant={
                   typeClick == 1 ? (error ? "danger" : "success") : "light"
                 }

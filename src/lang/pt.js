@@ -3,6 +3,10 @@ const ptJSON = {
   appName2: "bludemicsGym",
   appName3: "bluGym",
   slogan: "administre seus treinos diários",
+  head01: "crie seu treino.",
+  head02: "adicione alguns exercícios",
+  head03: "inicie o treinamento",
+  head04: "verifique suas estatísticas",
   keywords:
     "open software, gym, workout, hikking, sports, free, bludemics, blugym, gratis, academia, gimnasio, software livre, software libre, deportes",
   hello: "olá",
@@ -97,7 +101,16 @@ const ptJSON = {
   pushups: "flexões",
   crunches: "abdominais",
   minutesByWorkout: "minutos por treino",
-  manageWorkouts: "gerenciar treinos"
+  manageWorkouts: "gerenciar treinos",
+  freeLogin: "comece a usar gratis agora",
+  blugymOpen01:
+    "BluGym é um projeto de cõdigo aberto criado como parte do portfólio de Matias Leites. O código-fonte está atualmente no GitHub.",
+  githubLink: "https://github.com/matiasleites/bludemics-gym",
+  githubMatLink: "https://github.com/matiasleites/",
+  linkedinLink: "https://www.linkedin.com/in/matiasleites/",
+  about: "sobre",
+  us: "nós",
+  aboutUs: "sobre nós"
 };
 
 export const pt = (str) => {

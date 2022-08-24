@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Button, Col, Row } from "react-bootstrap";
 import Select from "react-select";
 import { getLang } from "../../lang/lang-fun";
 
@@ -12,6 +13,61 @@ export const SubTitle = ({ children }) => {
 
 export const Text = ({ children }) => {
   return <p className="text m-0">{children}</p>;
+};
+
+export const LanguageButtons = () => {
+  const [lang, setLang] = useState(getLang());
+  function dropLang(e) {
+    setLang(e);
+    localStorage.setItem("lang", e);
+    window.location.reload();
+  }
+  return (
+    <Row>
+      <Col>
+        <Button
+          variant="transparent"
+          style={{
+            color: lang == "es" ? "#ffffff" : "#282828",
+            backgroundColor: lang == "es" ? "#282828" : "#ffffff"
+          }}
+          onClick={() => {
+            dropLang("es");
+          }}
+        >
+          ES
+        </Button>
+      </Col>
+      <Col>
+        <Button
+          variant="transparent"
+          style={{
+            color: lang == "en" ? "#ffffff" : "#282828",
+            backgroundColor: lang == "en" ? "#282828" : "#ffffff"
+          }}
+          onClick={() => {
+            dropLang("en");
+          }}
+        >
+          EN
+        </Button>
+      </Col>
+      <Col>
+        <Button
+          variant="transparent"
+          style={{
+            color: lang == "pt" ? "#ffffff" : "#282828",
+            backgroundColor: lang == "pt" ? "#282828" : "#ffffff"
+          }}
+          onClick={() => {
+            dropLang("pt");
+          }}
+        >
+          PT
+        </Button>
+      </Col>
+    </Row>
+  );
 };
 
 export const SelectLanguage = () => {

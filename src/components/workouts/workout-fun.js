@@ -5,7 +5,7 @@ import {
   insertFirestore,
   updateFirestoreDocument
 } from "../../config/firebase";
-import { userId } from "../../config/general-fun";
+import { blueColor, msj, userId } from "../../config/general-fun";
 import { getStr } from "../../lang/lang-fun";
 
 export async function getUserWorkoutsList() {
@@ -20,7 +20,7 @@ export async function getUserWorkoutsList() {
 export async function createWorkout(name, exercices = []) {
   const uid = userId();
   if (uid) {
-    const data = { exercices, name, uid };
+    const data = { exercices, name, uid, color: blueColor };
     const response = await insertFirestore(`users/${uid}/workouts`, data);
     return response;
   }
@@ -139,7 +139,12 @@ export async function getStoredTrainings(start, end) {
   const uid = userId();
   if (uid) {
     if (!start) start = new Date();
-    start.setHours(0, 0, 0, 0);
+    try {
+      start.setHours(0, 0, 0, 0);
+    } catch (g) {
+      msj(g);
+    }
+
     if (!end) end = new Date();
     end.setHours(23, 59, 59, 0);
     var response = await getFirestoreDocument(
