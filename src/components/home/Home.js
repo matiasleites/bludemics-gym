@@ -1,14 +1,13 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { Helmet, HelmetData } from "react-helmet-async";
 import { getStr } from "../../lang/lang-fun";
-import { LanguageButtons } from "./home-ele";
+import { HeaderTrak, LanguageButtons } from "./home-ele";
 import f01 from "../../includes/f01.jpg";
 import bg001 from "../../includes/bg001.jpg";
 import bg002 from "../../includes/bg002.jpg";
 import bg003 from "../../includes/bg003.jpg";
 import bg004 from "../../includes/bg004.jpg";
 import bg005 from "../../includes/bg005.jpg";
-import track from "../../includes/components/trackCut.png";
 import head001 from "../../includes/components/topWidget001.jpg";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -19,7 +18,7 @@ import {
   LinkedinIcon,
   useWindowSize
 } from "../../config/general-fun";
-import { LoginForm, LogOutButton } from "../login/login-ele";
+import { LogOutButton } from "../login/login-ele";
 import { useAuth } from "../../context/authContext";
 import {
   StartWorkoutContainer,
@@ -191,50 +190,7 @@ function Home() {
               </>
             ) : (
               <>
-                <Row
-                  className="trackCard ms-0 me-0 mt-4 mb-2"
-                  style={{
-                    backgroundImage: `url(${track})`,
-                    backgroundPosition: "center",
-                    backgroundSize: "cover",
-                    minHeight: small ? "270px" : "400px",
-                    transition: "1s"
-                  }}
-                >
-                  <Col>
-                    <Row
-                      style={{ minHeight: small ? "50px" : "75px" }}
-                      className="p-2 pt-3"
-                    >
-                      <Col>{getStr("slogan", 1)}</Col>
-                    </Row>
-                    <Row
-                      style={{ minHeight: small ? "50px" : "75px" }}
-                      className="p-2 pt-3"
-                    >
-                      <Col>1. {getStr("head01", 1)}</Col>
-                    </Row>
-                    <Row
-                      style={{ minHeight: small ? "50px" : "75px" }}
-                      className="p-2 pt-3"
-                    >
-                      <Col>2. {getStr("head02", 1)}</Col>
-                    </Row>
-                    <Row
-                      style={{ minHeight: small ? "50px" : "75px" }}
-                      className="p-2 pt-3"
-                    >
-                      <Col>3. {getStr("head03", 1)}</Col>
-                    </Row>
-                    <Row
-                      style={{ minHeight: small ? "50px" : "75px" }}
-                      className="p-2 pt-3"
-                    >
-                      <Col>4. {getStr("head04", 1)}</Col>
-                    </Row>
-                  </Col>
-                </Row>
-                <LoginForm customClass={"m-0 p-2"} />
+                <HeaderTrak small={small} />
                 <Row className="mt-2 p-4 mb-4">
                   <Col className="about">
                     <h2>{getStr("aboutUs", 1)}</h2>
