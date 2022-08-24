@@ -122,8 +122,8 @@ export const LoginForm = ({ customClass }) => {
         }}
         className="loginForm"
       >
-        <Container>
-          <Row>
+        <Container className="p-2 pb-3">
+          <Row className="ps-1 pt-2 pb-2">
             <Col>{getStr("freeLogin", 1)}</Col>
           </Row>
           <Row>
@@ -138,6 +138,7 @@ export const LoginForm = ({ customClass }) => {
                   type="email"
                   value={email}
                   onChange={handleEmail}
+                  onLoadedData={handleEmail}
                 />
               </Form.Group>
             </Col>
@@ -186,7 +187,7 @@ export const LoginForm = ({ customClass }) => {
               >
                 <Button
                   className="pt-2 pb-2 mt-2"
-                  variant={error ? "danger" : "success"}
+                  variant={error ? "danger" : "primary"}
                   onClick={() => {
                     setTypeClick(0);
                   }}
