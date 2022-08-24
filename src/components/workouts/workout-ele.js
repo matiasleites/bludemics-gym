@@ -130,7 +130,7 @@ export const StartWorkoutContainer = ({ customClass, setUpdate, workouts }) => {
   }
 
   return (
-    <Container className={"fullContainer " + customClass}>
+    <Container className={"fullContainer ps-2 pe-2 " + customClass}>
       {currentTraining && currentTraining.open ? (
         <OpenTrainigContainer
           training={currentTraining}
@@ -784,6 +784,7 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
           className="text-start"
           style={{ color: work.color ? work.color : blueColor }}
           onClick={() => {
+            setAcceptDelete(false);
             setOpen(!open);
           }}
         >
@@ -809,7 +810,7 @@ export const LineWorkout = ({ work, getWorkoutsList }) => {
           )}
         </Col>
         {!open ? null : (
-          <Col className="text-end">
+          <Col className="text-end ps-0 pe-2" style={{ maxWidth: "70px" }}>
             <Button
               size="sm"
               variant={acceptDelete ? "danger" : "dark"}

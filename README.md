@@ -1,6 +1,6 @@
 # Bludemics Gym
 
-This project was created as "open source" under the [https://github.com/matiasleites/bludemics-gym/blob/master/LICENCE.md](MIT Licence).
+This project was created as "open source" under the [https://github.com/matiasleites/bludemics-gym/blob/master/LICENCE.md] (MIT Licence).
 
 ## The  proyect
 

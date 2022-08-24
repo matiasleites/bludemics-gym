@@ -23,7 +23,7 @@ import { makeReports } from "./reports-fun";
 import titleImage from "../../includes/components/stats001.jpg";
 
 // eslint-disable-next-line no-unused-vars
-export const ReportsContainer = ({ update, returnTrainings }) => {
+export const ReportsContainer = ({ update }) => {
   const [loading, setLoading] = useState(false);
   const [trainings, setTrainings] = useState([]);
   const [info, setInfo] = useState({ pos: 0, text: "" });
@@ -60,7 +60,6 @@ export const ReportsContainer = ({ update, returnTrainings }) => {
     const response = await getStoredTrainings(start, end);
     setLoading(false);
     if (response) {
-      returnTrainings(response);
       const myReport = makeReports(response);
       const myStepGraph = [];
 
@@ -308,7 +307,7 @@ export const DaysTrainings = ({ dates }) => {
   }
 
   return (
-    <Container className="fullContainer">
+    <Container className="fullContainer pt-2 pb-2">
       <Row>
         {dates.map((day, k) => {
           return <OneDayCell key={"day" + k} day={day} />;

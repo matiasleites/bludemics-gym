@@ -1,16 +1,19 @@
 html {
-  overscroll-behavior: none;
+  margin: 0 !important;
+  pading: 0 !important;
+  overscroll-behavior: none !important;
 }
 
 body {
-  margin: 0;
+  margin: 0 !important;
+  padding: 0 !important;
   font-family: -apple-system, BlinkMacSystemFont, "Open Sans", serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #e0e0e0;
   background-image: linear-gradient(315deg, #e0e0e0, #d3d3d3);
   min-height: 100vh;
-  overscroll-behavior: none;
+  overscroll-behavior: none !important;
   overflow: overlay;
   font-family: "OpenSans", serif;
 }
@@ -106,6 +109,37 @@ option {
   max-width: 700px !important;
 }
 
+.minContainer {
+  max-width: 100px !important;
+}
+
+.headerCell {
+  position: relative;
+  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  border-radius: 25px;
+  background-color: #efefef;
+  min-height: 80px;
+  font-weight: 600;
+  font-size: clamp(10pt, 3vw, 13pt) !important;
+  transition: 1s;
+  margin-top: 20px;
+}
+
+.headerCell .title {
+  min-height: 90px;
+  background-color: #282828;
+  border-top-left-radius: 25px;
+  border-top-right-radius: 25px;
+  padding: 10px;
+  color: #ffffff;
+}
+
+.headerCell .trackCard {
+  color: #efefef;
+  font-weight: 400;
+  font-size: clamp(10pt, 3vw, 13pt) !important;
+}
+
 .daysCell {
   margin: auto;
   position: relative;
@@ -117,9 +151,9 @@ option {
   min-height: 85px;
   max-width: 75px;
   border-radius: 25%;
-  background-color: #efefef;
+  background-color: #f6f6f6;
   text-align: center;
-  box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
+  box-shadow: 2px 2px 6px rgba(0, 0, 0, 0.2);
 }
 
 .daysCell .center {
@@ -144,9 +178,17 @@ option {
   position: relative;
   box-shadow: 3px 3px 5px rgba(0, 0, 0, 0.1);
   border-radius: 20px;
-  background-color: #efefef;
+  background-color: #70c9f6;
   transition: 1s;
   padding: 20px;
+}
+
+.about {
+  font-weight: 400;
+  font-size: clamp(8pt, 2.5vw, 12pt) !important;
+  text-align: justify;
+  padding-bottom: 10px;
+  padding-top: 10px;
 }
 
 .workoutButtonCell {
