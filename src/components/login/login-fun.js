@@ -12,7 +12,8 @@ export async function registerUser(email, pass) {
   await createUserWithEmailAndPassword(auth, email, pass)
     .then(async (resp) => {
       const create = await insertFirestore(`users/${resp.user.uid}`, {
-        created: firestoreNow()
+        created: firestoreNow(),
+        uid: resp.user.uid
       });
       if (create) {
         success = await addExampleWorkout();
