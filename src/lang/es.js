@@ -2,7 +2,7 @@ const esJSON = {
   appName: "bludemics Gym",
   appName2: "bludemicsGym",
   appName3: "bluGym",
-  slogan: "administrá tus entrenamientos",
+  slogan: "administrá y comparte tus entrenamientos",
   head01: "Creá tu entrenamiento",
   head02: "Adiciona algunos ejercicios",
   head03: "Comienza a entrenar",
@@ -106,6 +106,9 @@ const esJSON = {
   freeLogin: "comience a usar gratis ahora",
   blugymOpen01:
     "BluGym es un proyecto de codigo abierto creado como parte del portfolio de Matias Leites. El código fuente está actualmente en GitHub.",
+  blugymOpen02:
+    "Para desarrollar el sistema usamos algunas librerias y herramientas de terceros",
+  blugymOpen03: "Vea el codigo y los creadores con los siguientes botones",
   githubLink: "https://github.com/matiasleites/bludemics-gym",
   linkedinLink: "https://www.linkedin.com/in/matiasleites/",
   githubMatLink: "https://github.com/matiasleites/",
