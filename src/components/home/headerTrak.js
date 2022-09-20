@@ -1,5 +1,5 @@
 import { Col, Container, Row } from "react-bootstrap";
-import trackFull from "../../includes/components/trakLeftBig.png";
+import trackFull from "../../includes/components/trakLeftBig.webp";
 import { getStr } from "../../lang/lang-fun";
 import LoginForm from "../login/loginForm";
 
