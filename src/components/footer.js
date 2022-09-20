@@ -4,7 +4,7 @@ import LanguageButtons from "./home/languageButtons";
 const Footer = () => {
   return (
     <section id="footer">
-      <Container fluid>
+      <Container fluid className="mb-3">
         <Container className="text-center fullContainer p-2">
           <LanguageButtons />
         </Container>
