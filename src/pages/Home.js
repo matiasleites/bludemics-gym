@@ -4,7 +4,6 @@ import { getStr } from "../lang/lang-fun";
 import f01 from "../includes/f01.webp";
 import head001 from "../includes/components/topWidget001.webp";
 import { useEffect, useState } from "react";
-import { blueColorDark } from "../services/generalServices";
 import { LogOutButton } from "../components/login/logoutButton";
 import { useAuth } from "../context/authContext";
 import {
@@ -17,12 +16,12 @@ import { getLastReports } from "../services/reportsServices";
 import HeaderTrak from "../components/home/headerTrak";
 import useWindowSize from "../helpers/windowsSize";
 import { DaysTrainings } from "../components/reports/daysTraining";
-import { GithubAltIcon, GithubIcon, LinkedinIcon } from "../components/icons";
 import StartWorkoutContainer from "../components/workouts/startWorkoutContainer";
 import WorkoutContainer from "../components/workouts/workoutContainer";
 import ReportsContainer from "../components/reports/reportsContainer";
 import Header from "../components/header";
 import Footer from "../components/footer";
+import About from "../components/about";
 
 const helmetData = new HelmetData({});
 function Home() {
@@ -35,8 +34,6 @@ function Home() {
   const [workouts, setWorkouts] = useState([]);
   const [daysReport, setDaysReport] = useState([]);
   const [currentTraining, setCurrentTrainig] = useState({});
-
-  const [hover, setHover] = useState(-1);
 
   function newUpdate() {
     setUpdate(!update);
@@ -146,131 +143,7 @@ function Home() {
             ) : (
               <>
                 <HeaderTrak small={small} />
-                <Row className="mt-2 p-4 mb-4">
-                  <Col className="about">
-                    <h2>{getStr("aboutUs", 1)}</h2>
-                    <p>{getStr("blugymOpen01", 1)}</p>
-                    <p className="mb-0">{getStr("blugymOpen02", 1)}:</p>
-                    <div>
-                      <a
-                        href="https://reactjs.org"
-                        target={"_blank"}
-                        rel="noreferrer"
-                      >
-                        ReacJS
-                      </a>
-                      <a
-                        href="https://firebase.google.com/"
-                        target={"_blank"}
-                        rel="noreferrer"
-                      >
-                        Firebase
-                      </a>
-                      <a
-                        href="https://react-bootstrap.github.io/"
-                        target={"_blank"}
-                        rel="noreferrer"
-                      >
-                        React Bootstrap
-                      </a>
-                      <a
-                        href="https://formidable.com/open-source/victory/docs"
-                        target={"_blank"}
-                        rel="noreferrer"
-                      >
-                        Victory Chart
-                      </a>
-                      <a
-                        href="https://www.npmjs.com/package/react-youtube"
-                        target={"_blank"}
-                        rel="noreferrer"
-                      >
-                        React youtube
-                      </a>
-                      <a
-                        href="https://www.npmjs.com/package/react-helmet-async"
-                        target={"_blank"}
-                        rel="noreferrer"
-                      >
-                        React Helmet
-                      </a>
-                      <a
-                        href="https://v5.reactrouter.com/"
-                        target={"_blank"}
-                        rel="noreferrer"
-                      >
-                        React Router
-                      </a>
-                    </div>
-                    <p className="mt-2"> {getStr("blugymOpen03", 1)}:</p>
-                    <Row className="pt-2 mb-2">
-                      <Col className="text-center">
-                        <a
-                          href={getStr("githubLink")}
-                          target="blank"
-                          onMouseEnter={() => {
-                            setHover(2);
-                          }}
-                          onMouseLeave={() => {
-                            setHover(-1);
-                          }}
-                        >
-                          <GithubIcon
-                            className="icon"
-                            fill={hover == 2 ? blueColorDark : "#282828"}
-                            style={{
-                              width: "40px",
-                              height: "40px"
-                            }}
-                          />
-                        </a>
-                      </Col>
-                      <Col className="text-center">
-                        <a
-                          href={getStr("linkedinLink")}
-                          target="blank"
-                          onMouseEnter={() => {
-                            setHover(1);
-                          }}
-                          onMouseLeave={() => {
-                            setHover(-1);
-                          }}
-                        >
-                          <LinkedinIcon
-                            className="icon"
-                            fill={hover == 1 ? blueColorDark : "#282828"}
-                            style={{
-                              width: "40px",
-                              height: "40px"
-                            }}
-                          />
-                        </a>
-                      </Col>
-
-                      <Col className="text-center">
-                        <a
-                          href={getStr("githubMatLink")}
-                          target="blank"
-                          onMouseEnter={() => {
-                            setHover(3);
-                          }}
-                          onMouseLeave={() => {
-                            setHover(-1);
-                          }}
-                        >
-                          <GithubAltIcon
-                            className="icon"
-                            fill={hover == 3 ? blueColorDark : "#282828"}
-                            style={{
-                              width: "40px",
-                              height: "40px"
-                            }}
-                          />
-                        </a>
-                      </Col>
-                    </Row>
-                  </Col>
-                </Row>
+                <div className="p-4" />
               </>
             )}
           </Container>
@@ -291,6 +164,7 @@ function Home() {
           ) : null}
         </Container>
       </section>
+      <About />
       <Footer />
     </Container>
   );
