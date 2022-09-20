@@ -3,24 +3,23 @@ import { Col, Container, Row } from "react-bootstrap";
 import { getStr } from "../../lang/lang-fun";
 import { getUserWorkoutsList } from "../../services/workoutServices";
 import NewWorkoutForm from "./newWorkoutForm";
-import mwb002 from "../../includes/components/myWorkouts002.jpg";
+import mwb002 from "../../includes/components/myWorkouts002.webp";
 import ListOfWorkoutsWidget from "./listOfWorkoutsWidget";
 
 const WorkoutContainer = ({ customClass, update, workouts }) => {
   const [workoutsArray, setWorkoutsArray] = useState([]);
 
   useEffect(() => {
+    async function getWorkoutsList() {
+      if (!workouts) {
+        const myWorks = await getUserWorkoutsList();
+        setWorkoutsArray([...myWorks]);
+      } else {
+        setWorkoutsArray([...workouts]);
+      }
+    }
     getWorkoutsList();
   }, [setWorkoutsArray, workouts]);
-
-  async function getWorkoutsList() {
-    if (!workouts) {
-      const myWorks = await getUserWorkoutsList();
-      setWorkoutsArray([...myWorks]);
-    } else {
-      setWorkoutsArray([...workouts]);
-    }
-  }
 
   function setUpdate() {
     update();

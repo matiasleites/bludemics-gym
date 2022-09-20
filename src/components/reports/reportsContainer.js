@@ -15,7 +15,7 @@ import {
 import { getStr } from "../../lang/lang-fun";
 import { getStoredTrainings } from "../../services/workoutServices";
 import { makeReports } from "../../services/reportsServices";
-import titleImage from "../../includes/components/stats001.jpg";
+import titleImage from "../../includes/components/stats001.webp";
 import { ReportWorkouts } from "./reportWorkouts";
 import useWindowSize from "../../helpers/windowsSize";
 import GeneralInformation from "../generalInformation";
