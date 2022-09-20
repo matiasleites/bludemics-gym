@@ -1,11 +1,15 @@
 import { useRef, useState } from "react";
 import { Form, Container, Row, Col, Button } from "react-bootstrap";
-import { GeneralSpinner } from "../../config/general-fun";
 import { getStr } from "../../lang/lang-fun";
-import { logIn, registerUser, logOut } from "./login-fun";
-import { ReactComponent as LogoutIcon } from "../../includes/icons/logout.svg";
+import { auth, firestoreNow, insertFirestore } from "../../config/firebase";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword
+} from "firebase/auth";
+import { addExampleWorkout } from "../../services/workoutServices";
+import GeneralSpinner from "../generalSpinner";
 
-export const LoginForm = ({ customClass }) => {
+const LoginForm = ({ customClass }) => {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
   const [validated, setValidated] = useState(false);
@@ -14,6 +18,44 @@ export const LoginForm = ({ customClass }) => {
   const [email, setEmail] = useState("");
   const [typeClick, setTypeClick] = useState(0);
   const formRef = useRef();
+
+  async function registerUser(email, pass) {
+    var info = "";
+    var success = false;
+    await createUserWithEmailAndPassword(auth, email, pass)
+      .then(async (resp) => {
+        const create = await insertFirestore(`users/${resp.user.uid}`, {
+          created: firestoreNow(),
+          uid: resp.user.uid
+        });
+        if (create) {
+          success = await addExampleWorkout();
+        } else {
+          success = create;
+        }
+      })
+      .catch((error) => {
+        info = error.code;
+        info = info.replaceAll("auth/", "");
+        info = info.replaceAll("-", " ");
+      });
+    return { success, info };
+  }
+
+  async function logIn(email, pass) {
+    var info = "";
+    var success = false;
+    await signInWithEmailAndPassword(auth, email, pass)
+      .then(() => {
+        success = true;
+      })
+      .catch((error) => {
+        info = error.code;
+        info = info.replaceAll("auth/", "");
+        info = info.replaceAll("-", " ");
+      });
+    return { success, info };
+  }
 
   function handleEmail(event) {
     setEmail(event.target.value);
@@ -50,6 +92,7 @@ export const LoginForm = ({ customClass }) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       setValidated(false);
+      setError(getStr("emptyInputs", 1));
     } else {
       setValidated(true);
       var email = form.elements.email.value;
@@ -250,32 +293,4 @@ export const LoginForm = ({ customClass }) => {
   );
 };
 
-export const LogOutButton = () => {
-  const [back, setBack] = useState("#414141");
-  return (
-    <Button
-      variant="transparent p-0 m-0"
-      size="sm"
-      className="transparentButton"
-      style={{ boxShadow: "0px 0px 0px rgba(0, 0, 0, 0.0)" }}
-    >
-      <LogoutIcon
-        fill={back}
-        style={{
-          transition: "1s",
-          width: "20px",
-          height: "20px"
-        }}
-        onMouseOver={() => {
-          setBack("#666666");
-        }}
-        onMouseOut={() => {
-          setBack("#414141");
-        }}
-        onClick={() => {
-          logOut();
-        }}
-      />
-    </Button>
-  );
-};
+export default LoginForm;

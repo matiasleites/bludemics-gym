@@ -1,37 +1,32 @@
 import { Container, Row, Col } from "react-bootstrap";
 import { Helmet, HelmetData } from "react-helmet-async";
-import { getStr } from "../../lang/lang-fun";
-import { HeaderTrak, LanguageButtons } from "./home-ele";
-import f01 from "../../includes/f01.jpg";
-import bg001 from "../../includes/bg001.jpg";
-import bg002 from "../../includes/bg002.jpg";
-import bg003 from "../../includes/bg003.jpg";
-import bg004 from "../../includes/bg004.jpg";
-import bg005 from "../../includes/bg005.jpg";
-import head001 from "../../includes/components/topWidget001.jpg";
+import { getStr } from "../lang/lang-fun";
+import f01 from "../includes/f01.jpg";
+import bg001 from "../includes/bg001.jpg";
+import bg002 from "../includes/bg002.jpg";
+import bg003 from "../includes/bg003.jpg";
+import bg004 from "../includes/bg004.jpg";
+import bg005 from "../includes/bg005.jpg";
+import head001 from "../includes/components/topWidget001.jpg";
 import { useEffect, useRef, useState } from "react";
-import {
-  blueColorDark,
-  delay,
-  GithubAltIcon,
-  GithubIcon,
-  LinkedinIcon,
-  useWindowSize
-} from "../../config/general-fun";
-import { LogOutButton } from "../login/login-ele";
-import { useAuth } from "../../context/authContext";
-import {
-  StartWorkoutContainer,
-  WorkoutContainer
-} from "../workouts/workout-ele";
-import { DaysTrainings, ReportsContainer } from "../reports/reports-ele";
+import { blueColorDark, delay } from "../services/generalServices";
+import { LogOutButton } from "../components/login/logoutButton";
+import { useAuth } from "../context/authContext";
 import {
   getCurrentTraining,
   getUserWorkoutsList,
   isSameDay,
   pastDays
-} from "../workouts/workout-fun";
-import { getLastReports } from "../reports/reports-fun";
+} from "../services/workoutServices";
+import { getLastReports } from "../services/reportsServices";
+import HeaderTrak from "../components/home/headerTrak";
+import LanguageButtons from "../components/home/languageButtons";
+import useWindowSize from "../helpers/windowsSize";
+import { DaysTrainings } from "../components/reports/daysTraining";
+import { GithubAltIcon, GithubIcon, LinkedinIcon } from "../components/icons";
+import StartWorkoutContainer from "../components/workouts/startWorkoutContainer";
+import WorkoutContainer from "../components/workouts/workoutContainer";
+import ReportsContainer from "../components/reports/reportsContainer";
 
 const helmetData = new HelmetData({});
 function Home() {
@@ -44,7 +39,7 @@ function Home() {
   const [workouts, setWorkouts] = useState([]);
   const [daysReport, setDaysReport] = useState([]);
   const [currentTraining, setCurrentTrainig] = useState({});
-  const arrayBacks = [bg001, bg002, bg003, bg004, bg005];
+
   const [back, setBack] = useState(bg005);
   const [timer, setTimer] = useState(0);
   const [headerH, setHeaderH] = useState("300px");
@@ -52,6 +47,7 @@ function Home() {
   const [hover, setHover] = useState(-1);
 
   useEffect(() => {
+    const arrayBacks = [bg001, bg002, bg003, bg004, bg005];
     tick.current = setInterval(() => {
       if (timer == 0) {
         var randBack =
@@ -72,66 +68,58 @@ function Home() {
   }
 
   useEffect(() => {
-    if (width < 500) {
-      setSmall(true);
-    } else {
-      setSmall(false);
+    let isSmall = false;
+    if (width < 500) isSmall = true;
+    setSmall(isSmall);
+    async function updateAnimation() {
+      await delay(1);
+      setHeaderH(isSmall ? "100px" : "200px");
     }
-    updateBackSize();
-  }, [width]);
+    updateAnimation();
+  }, [width, small]);
 
   useEffect(() => {
-    animateBack();
-    getWorkouts();
+    async function getWorks() {
+      setLoading(true);
+      const myWorks = await getUserWorkoutsList();
+      setWorkouts([...myWorks]);
+      setLoading(false);
+    }
+
+    async function verifyCurrentTraining() {
+      setLoading(true);
+      const training = await getCurrentTraining();
+      if (training && training.length > 0) {
+        setCurrentTrainig({ ...training[0] });
+      } else {
+        setCurrentTrainig({});
+      }
+      setLoading(false);
+    }
+
+    async function getReports() {
+      if (user && isLogged) {
+        var reports = await getLastReports();
+        reports = reports.map((training) => {
+          training.open = training.open.toDate();
+          return training;
+        });
+        const myDates = pastDays().reverse();
+        const trainingDates = [];
+        for (const day of myDates) {
+          const haveTraining = reports.some((training) => {
+            return isSameDay(training.open, day);
+          });
+          trainingDates.push({ day, have: haveTraining });
+        }
+        setDaysReport([...trainingDates]);
+      }
+    }
+
+    getWorks();
     verifyCurrentTraining();
     getReports();
-  }, [update]);
-
-  async function animateBack() {
-    await delay(2);
-    updateBackSize();
-  }
-
-  function updateBackSize() {
-    setHeaderH(small ? "100px" : "200px");
-  }
-
-  async function getWorkouts() {
-    setLoading(true);
-    const myWorks = await getUserWorkoutsList();
-    setWorkouts([...myWorks]);
-    setLoading(false);
-  }
-
-  async function getReports() {
-    if (user && isLogged) {
-      var reports = await getLastReports();
-      reports = reports.map((training) => {
-        training.open = training.open.toDate();
-        return training;
-      });
-      const myDates = pastDays().reverse();
-      const trainingDates = [];
-      for (const day of myDates) {
-        const haveTraining = reports.some((training) => {
-          return isSameDay(training.open, day);
-        });
-        trainingDates.push({ day, have: haveTraining });
-      }
-      setDaysReport([...trainingDates]);
-    }
-  }
-
-  async function verifyCurrentTraining() {
-    setLoading(true);
-    const training = await getCurrentTraining();
-    if (training && training.length > 0) {
-      setCurrentTrainig({ ...training[0] });
-    } else {
-      setCurrentTrainig({});
-    }
-    setLoading(false);
-  }
+  }, [update, isLogged, user]);
 
   return (
     <Container className={"back " + (small ? "p-0 text-center" : "p-0")} fluid>

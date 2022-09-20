@@ -1,5 +1,5 @@
-import { msj } from "../../config/general-fun";
-import { getStoredTrainings } from "../workouts/workout-fun";
+import { msj } from "./generalServices";
+import { getStoredTrainings } from "./workoutServices";
 
 export function makeReports(trainings) {
   const response = {

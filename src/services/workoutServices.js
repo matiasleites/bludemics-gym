@@ -4,9 +4,9 @@ import {
   getFirestoreDocument,
   insertFirestore,
   updateFirestoreDocument
-} from "../../config/firebase";
-import { blueColor, msj, userId } from "../../config/general-fun";
-import { getStr } from "../../lang/lang-fun";
+} from "../config/firebase";
+import { blueColor, msj, userId } from "./generalServices";
+import { getStr } from "../lang/lang-fun";
 
 export async function getUserWorkoutsList() {
   const uid = userId();
@@ -113,26 +113,6 @@ export async function storeTraining(info) {
     return response;
   }
   return false;
-}
-
-export function traninigElapsedTime(workout) {
-  const myStart = workout.open.toDate();
-  const now = new Date();
-  const diff = now.getTime() - myStart.getTime();
-  const totalSeconds = diff / 1000;
-  const hours = totalSeconds / (60 * 60);
-  var minutes = totalSeconds / 60;
-  if (minutes > 60) minutes = minutes % 60;
-  const seconds = totalSeconds % 60;
-  var minutesFormated = Math.floor(minutes);
-  if (minutesFormated < 10) minutesFormated = "0" + minutesFormated;
-  var secondsFormated = Math.floor(seconds);
-  if (secondsFormated < 10) secondsFormated = "0" + secondsFormated;
-  var hoursFormated = Math.floor(hours);
-  if (hoursFormated < 10) hoursFormated = "0" + hoursFormated;
-  if (hours >= 1)
-    return hoursFormated + ":" + minutesFormated + ":" + secondsFormated;
-  return minutesFormated + ":" + secondsFormated;
 }
 
 export async function getStoredTrainings(start, end) {

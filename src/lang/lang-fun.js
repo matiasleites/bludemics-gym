@@ -1,4 +1,4 @@
-import { msj } from "../config/general-fun.js";
+import { msj } from "../services/generalServices.js";
 import { en } from "../lang/en.js";
 import { es } from "./es.js";
 import { pt } from "./pt.js";

@@ -15,7 +15,7 @@ import {
 import { getDownloadURL, getStorage, ref } from "firebase/storage";
 import { initializeAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
-import { isEven, msj } from "./general-fun";
+import { isEven, msj } from "../services/generalServices";
 
 const config = {
   apiKey: process.env.REACT_APP_APIKEY,
