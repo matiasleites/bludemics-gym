@@ -9,21 +9,19 @@ import {
 } from "victory";
 import {
   dateToInputString,
-  DownIcon,
   formatedNumber,
-  GeneralInformation,
-  getGraphicSize,
-  PlayIcon,
-  useWindowSize
-} from "../../config/general-fun";
-import { getLang, getStr } from "../../lang/lang-fun";
-import { SimpleLineWorkout } from "../workouts/workout-ele";
-import { getStoredTrainings, pastDays } from "../workouts/workout-fun";
-import { makeReports } from "./reports-fun";
+  getGraphicSize
+} from "../../services/generalServices";
+import { getStr } from "../../lang/lang-fun";
+import { getStoredTrainings } from "../../services/workoutServices";
+import { makeReports } from "../../services/reportsServices";
 import titleImage from "../../includes/components/stats001.jpg";
+import { ReportWorkouts } from "./reportWorkouts";
+import useWindowSize from "../../helpers/windowsSize";
+import GeneralInformation from "../generalInformation";
 
 // eslint-disable-next-line no-unused-vars
-export const ReportsContainer = ({ update }) => {
+const ReportsContainer = ({ update }) => {
   const [loading, setLoading] = useState(false);
   const [trainings, setTrainings] = useState([]);
   const [info, setInfo] = useState({ pos: 0, text: "" });
@@ -248,107 +246,4 @@ export const ReportsContainer = ({ update }) => {
   );
 };
 
-export const ReportWorkouts = ({ workouts }) => {
-  const [open, setOpen] = useState(false);
-  return (
-    <Container className="window">
-      <Row
-        onClick={() => {
-          setOpen(!open);
-        }}
-        className="p-1"
-      >
-        <Col>
-          {getStr("workouts", 1)}{" "}
-          {open ? (
-            <DownIcon
-              className="icon"
-              fill={"#282828"}
-              style={{
-                width: "10px",
-                height: "10px"
-              }}
-            />
-          ) : (
-            <PlayIcon
-              className="icon"
-              fill={"#282828"}
-              style={{
-                width: "6px",
-                height: "6px"
-              }}
-            />
-          )}
-        </Col>
-      </Row>
-      {open && workouts && workouts.length > 0 ? (
-        <>
-          {Object.entries(workouts).map(([k, work]) => (
-            <SimpleLineWorkout
-              key={"example" + k + work.id}
-              pos={parseInt(k) + 1}
-              work={work}
-            />
-          ))}
-        </>
-      ) : null}
-    </Container>
-  );
-};
-
-export const DaysTrainings = ({ dates }) => {
-  if (!dates) {
-    dates = pastDays();
-    dates = dates.map((date) => {
-      date.day = date;
-      date.have = false;
-      return date;
-    });
-  }
-
-  return (
-    <Container className="fullContainer pt-2 pb-2">
-      <Row>
-        {dates.map((day, k) => {
-          return <OneDayCell key={"day" + k} day={day} />;
-        })}
-      </Row>
-    </Container>
-  );
-};
-
-export const OneDayCell = ({ day }) => {
-  const [locale, setLocale] = useState("en-US");
-  useEffect(() => {
-    const myLocale =
-      navigator.languages && navigator.languages.length
-        ? navigator.languages[0]
-        : navigator.language;
-
-    if (myLocale && myLocale.startsWith(getLang())) {
-      setLocale(myLocale);
-    } else {
-      setLocale(getLang() + "-US");
-    }
-  }, [day]);
-
-  function removeDot(date) {
-    if (date.endsWith(".")) date = date.slice(0, -1);
-    return date;
-  }
-
-  return (
-    <Col className="p-0 m-1 text-center">
-      <div className={"daysCell " + (day.have ? "have" : "")}>
-        <div className="center">
-          <p>{day.day.getDate().toLocaleString()}</p>
-          <p>
-            {removeDot(
-              day.day.toLocaleDateString(locale, { weekday: "short" })
-            )}
-          </p>
-        </div>
-      </div>
-    </Col>
-  );
-};
+export default ReportsContainer;
