@@ -4,7 +4,7 @@ const ptJSON = {
   appName3: "bluGym",
   slogan: "administre e compartilhe seus treinos diários",
   description:
-    "Bludemics Gym é um aplicativo opensource para genernciar e compartilhar seus treinos diários. Començe a usar grátis agora",
+    "Bludemics Gym é um aplicativo opensource para gerenciar e compartilhar seus treinos diários. Començe a usar grátis agora",
   head01: "crie seu treino.",
   head02: "adicione alguns exercícios",
   head03: "inicie o treinamento",
