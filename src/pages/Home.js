@@ -122,7 +122,11 @@ function Home() {
   }, [update, isLogged, user]);
 
   return (
-    <Container className={"back " + (small ? "p-0 text-center" : "p-0")} fluid>
+    <Container
+      id="main"
+      className={"back " + (small ? "p-0 text-center" : "p-0")}
+      fluid
+    >
       <Helmet helmetData={helmetData}>
         <title>{getStr("appName3", 1)}</title>
         <meta name="description" content={getStr("slogan", 1)} />
@@ -136,7 +140,7 @@ function Home() {
         <meta property="article:tag" content={getStr("keywords")} />
         <link rel="canonical" href="https://gym.bludemics.com" />
       </Helmet>
-      <section id="sHeader">
+      <section id="header">
         <Container
           className="m-0"
           fluid
@@ -149,7 +153,7 @@ function Home() {
           }}
         />
       </section>
-      <section id="sBody">
+      <section id="body">
         <Container>
           <Container className={"text-start p-0 fullContainer headerCell"}>
             <Row
@@ -161,7 +165,9 @@ function Home() {
                 transition: "1s"
               }}
             >
-              <Col>{getStr("appName2", 1)}</Col>
+              <Col>
+                <h1>Bludemics Gym</h1>
+              </Col>
             </Row>
 
             {user && isLogged ? (
@@ -183,28 +189,60 @@ function Home() {
                   <Col className="about">
                     <h2>{getStr("aboutUs", 1)}</h2>
                     <p>{getStr("blugymOpen01", 1)}</p>
+                    <p className="mb-0">{getStr("blugymOpen02", 1)}:</p>
+                    <div>
+                      <a
+                        href="https://reactjs.org"
+                        target={"_blank"}
+                        rel="noreferrer"
+                      >
+                        ReacJS
+                      </a>
+                      <a
+                        href="https://firebase.google.com/"
+                        target={"_blank"}
+                        rel="noreferrer"
+                      >
+                        Firebase
+                      </a>
+                      <a
+                        href="https://react-bootstrap.github.io/"
+                        target={"_blank"}
+                        rel="noreferrer"
+                      >
+                        React Bootstrap
+                      </a>
+                      <a
+                        href="https://formidable.com/open-source/victory/docs"
+                        target={"_blank"}
+                        rel="noreferrer"
+                      >
+                        Victory Chart
+                      </a>
+                      <a
+                        href="https://www.npmjs.com/package/react-youtube"
+                        target={"_blank"}
+                        rel="noreferrer"
+                      >
+                        React youtube
+                      </a>
+                      <a
+                        href="https://www.npmjs.com/package/react-helmet-async"
+                        target={"_blank"}
+                        rel="noreferrer"
+                      >
+                        React Helmet
+                      </a>
+                      <a
+                        href="https://v5.reactrouter.com/"
+                        target={"_blank"}
+                        rel="noreferrer"
+                      >
+                        React Router
+                      </a>
+                    </div>
+                    <p className="mt-2"> {getStr("blugymOpen03", 1)}:</p>
                     <Row className="pt-2 mb-2">
-                      <Col className="text-center">
-                        <a
-                          href={getStr("linkedinLink")}
-                          target="blank"
-                          onMouseEnter={() => {
-                            setHover(1);
-                          }}
-                          onMouseLeave={() => {
-                            setHover(-1);
-                          }}
-                        >
-                          <LinkedinIcon
-                            className="icon"
-                            fill={hover == 1 ? blueColorDark : "#282828"}
-                            style={{
-                              width: "40px",
-                              height: "40px"
-                            }}
-                          />
-                        </a>
-                      </Col>
                       <Col className="text-center">
                         <a
                           href={getStr("githubLink")}
@@ -226,6 +264,28 @@ function Home() {
                           />
                         </a>
                       </Col>
+                      <Col className="text-center">
+                        <a
+                          href={getStr("linkedinLink")}
+                          target="blank"
+                          onMouseEnter={() => {
+                            setHover(1);
+                          }}
+                          onMouseLeave={() => {
+                            setHover(-1);
+                          }}
+                        >
+                          <LinkedinIcon
+                            className="icon"
+                            fill={hover == 1 ? blueColorDark : "#282828"}
+                            style={{
+                              width: "40px",
+                              height: "40px"
+                            }}
+                          />
+                        </a>
+                      </Col>
+
                       <Col className="text-center">
                         <a
                           href={getStr("githubMatLink")}
@@ -270,7 +330,7 @@ function Home() {
           ) : null}
         </Container>
       </section>
-      <section id="sFoot">
+      <section id="footer">
         <Container fluid>
           <Container className="text-center fullContainer p-2">
             <LanguageButtons />

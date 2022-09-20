@@ -97,6 +97,10 @@ option {
   font-size: clamp(15px, 8vw, 32px);
 }
 
+.title h1{
+  font-size: clamp(15px, 8vw, 32px);
+}
+
 .subTitle {
   font-size: clamp(12px, 5vw, 20px);
 }
@@ -191,6 +195,21 @@ option {
   padding-bottom: 10px;
   padding-top: 10px;
 }
+
+.about a{
+  font-size: clamp(8pt, 2.1vw, 10pt) !important;
+  text-decoration: none;
+  margin: 0px 5px;
+  color: #5395b6;
+  transition: 0.5s;
+}
+
+.about a:hover{
+  text-decoration: none;
+  margin: 0px 5px;
+  color: #427a96;
+}
+
 
 .workoutButtonCell {
   position: relative;
