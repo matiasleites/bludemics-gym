@@ -3,6 +3,8 @@ const esJSON = {
   appName2: "bludemicsGym",
   appName3: "bluGym",
   slogan: "administrá y comparte tus entrenamientos",
+  description:
+    "Bludemics Gym es un sistema opensource para gerenciar y compartir tus entrenamientos diarios. Comienza a usar grátis ahora.",
   head01: "Creá tu entrenamiento",
   head02: "Adiciona algunos ejercicios",
   head03: "Comienza a entrenar",

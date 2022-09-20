@@ -3,12 +3,14 @@ const enJSON = {
   appName2: "bludemicsGym",
   appName3: "bluGym",
   slogan: "manage and share your daily workouts",
+  description:
+    "Bludemics Gym is an opensource app designed to manage and share your daily workouts. Start using now for free",
   head01: "create your workout",
   head02: "add some exercises",
   head03: "start training",
   head04: "check your stats",
   keywords:
-    "open software, gym, workout, hikking, sports, free, bludemics, blugym, gratis, academia, gimnasio, software livre, software libre, deportes",
+    "opensource, open software, gym, workout, hikking, sports, free, bludemics, blugym, gratis, academia, gimnasio, software livre, software libre, deportes",
   hello: "hello",
   hi: "hi",
   login: "login",
