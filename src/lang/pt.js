@@ -106,7 +106,7 @@ const ptJSON = {
   manageWorkouts: "gerenciar treinos",
   freeLogin: "comece a usar gratis agora",
   blugymOpen01:
-    "BluGym é um projeto de cõdigo aberto criado como parte do portfólio de Matias Leites. O código-fonte está atualmente no GitHub.",
+    "BluGym é um projeto de código aberto criado como parte do portfólio de Matias Leites. O código-fonte está atualmente no GitHub.",
   blugymOpen02:
     "Para desenvolver o sistema usamos algumas bibliotecas e ferramentas de terceiros",
   blugymOpen03: "Veja o código e os criadores nos seguintes botões",
