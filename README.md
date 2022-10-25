@@ -1,6 +1,6 @@
 # Bludemics Gym
 
-This project was created as "open source" under the [https://github.com/matiasleites/bludemics-gym/blob/master/LICENCE.md] (MIT Licence).
+[BluGym online](https://gym.bludemics.com)
 
 ## The  proyect
 
@@ -11,3 +11,7 @@ The main objective is to create a responsive online system to record our daily p
 ## Main Resources
 
 ReactJs, JavaScript, Google Firebase, GitHub, React-bootstrap
+
+## Licence
+
+This project was created as "open source" under the [https://github.com/matiasleites/bludemics-gym/blob/master/LICENCE.md] (MIT Licence).
